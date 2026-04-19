@@ -16,6 +16,10 @@ namespace GymApp
                 options.UseSqlServer(builder.Configuration
                     .GetConnectionString("DefaultConnection")));
 
+            var cultureInfo = new System.Globalization.CultureInfo("el-GR");
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

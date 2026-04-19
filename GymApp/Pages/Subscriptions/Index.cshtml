@@ -1,0 +1,56 @@
+﻿@page "{memberId:int}"
+@model GymApp.Pages.Subscriptions.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h2>Συνδρομές — @Model.Member.Firstname @Model.Member.Lastname</h2>
+        <a asp-page="Create" asp-route-memberId="@Model.Member.Id" class="btn btn-primary">+ Νέα Συνδρομή</a>
+    </div>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Πρόγραμμα</th>
+                <th>Πακέτο</th>
+                <th>Έναρξη</th>
+                <th>Λήξη</th>
+                <th>Ποσό</th>
+                <th>Κατάσταση</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Subscriptions.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Δεν υπάρχουν συνδρομές.</td>
+                </tr>
+            }
+            @foreach (var sub in Model.Subscriptions)
+            {
+                <tr>
+                    <td>@sub.SubscriptionPlan.GymProgram.Name</td>
+                    <td>@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
+                    <td>@sub.StartDate.ToShortDateString()</td>
+                    <td>@sub.EndDate.ToShortDateString()</td>
+                    <td>@sub.AmountPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
+                    <td>
+                        @if (sub.IsActive)
+                        {
+                            <span class="badge bg-success">Ενεργή</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Ληγμένη</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="/Attendances/Index" asp-route-subscriptionId="@sub.Id" class="btn btn-sm btn-info">Παρουσίες</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-page="/Members/Index" class="btn btn-secondary mt-2">← Επιστροφή στα Μέλη</a>
+</div>

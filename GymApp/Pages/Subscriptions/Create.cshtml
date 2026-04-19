@@ -1,0 +1,71 @@
+﻿@page "{memberId:int}"
+@model GymApp.Pages.Subscriptions.CreateModel
+
+<div class="container mt-4">
+    <h2>Νέα Συνδρομή — @Model.Member.Firstname @Model.Member.Lastname</h2>
+    <hr />
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-0">@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    @* Βήμα 1: Επιλογή Προγράμματος *@
+    <form method="post" asp-page-handler="SelectProgram">
+        <input type="hidden" asp-for="Subscription.MemberId" />
+
+        <div class="mb-3">
+            <label class="form-label">Βήμα 1: Επιλέξτε Πρόγραμμα</label>
+            <div class="input-group">
+                <select asp-for="SelectedProgramId" asp-items="Model.ProgramList" class="form-select">
+                    <option value="">-- Επιλέξτε Πρόγραμμα --</option>
+                </select>
+                <button type="submit" class="btn btn-outline-primary">Επιλογή →</button>
+            </div>
+        </div>
+    </form>
+
+    @* Βήμα 2: Εμφανίζεται μόνο αφού επιλεγεί πρόγραμμα *@
+    @if (Model.ProgramSelected && Model.PlanList != null)
+    {
+        <form method="post" asp-page-handler="Save">
+            <input type="hidden" asp-for="Subscription.MemberId" />
+            <input type="hidden" asp-for="SelectedProgramId" />
+
+            <div class="mb-3">
+                <label asp-for="Subscription.SubscriptionPlanId" class="form-label">Βήμα 2: Επιλέξτε Πακέτο</label>
+                <select asp-for="Subscription.SubscriptionPlanId" asp-items="Model.PlanList" class="form-select">
+                    <option value="">-- Επιλέξτε Πακέτο --</option>
+                </select>
+                <span asp-validation-for="Subscription.SubscriptionPlanId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Subscription.StartDate" class="form-label">Ημερομηνία Έναρξης</label>
+                <input asp-for="Subscription.StartDate" type="date" class="form-control"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Subscription.StartDate" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+            <a asp-page="Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary">Ακύρωση</a>
+        </form>
+    }
+    else if (Model.ProgramSelected)
+    {
+        <div class="alert alert-warning">
+            Αυτό το πρόγραμμα δεν έχει πακέτα. Προσθέστε πρώτα πακέτα στο πρόγραμμα.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+}
