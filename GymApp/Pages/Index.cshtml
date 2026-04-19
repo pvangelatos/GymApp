@@ -84,5 +84,45 @@
                 </div>
             </div>
         </div>
+       
     </div>
+    @if (Model.ExpiringSubscriptions > 0)
+    {
+        <div class="alert alert-warning mt-4">
+            <h5>⚠️ Ληγούσες Συνδρομές (επόμενες 7 μέρες)</h5>
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Μέλος</th>
+                        <th>Πρόγραμμα</th>
+                        <th>Λήξη</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sub in Model.ExpiringSoonList)
+                    {
+                        <tr>
+                            <td>@sub.Member.Lastname @sub.Member.Firstname</td>
+                            <td>@sub.SubscriptionPlan.GymProgram.Name</td>
+                            <td>
+                                @if (sub.EndDate == DateTime.Today)
+                                {
+                                    <span class="badge bg-danger">Σήμερα!</span>
+                                }
+                                else
+                                {
+                                    @sub.EndDate.ToShortDateString()
+                                }
+                            </td>
+                            <td>
+                                <a asp-page="/Subscriptions/Renew" asp-route-id="@sub.Id"
+                                   class="btn btn-sm btn-success">Ανανέωση</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

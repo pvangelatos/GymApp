@@ -1,4 +1,5 @@
 using GymApp.Data;
+using GymApp.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,12 @@ namespace GymApp.Pages
         public int ExpiredSubscriptions { get; set; }
         public decimal MonthlyRevenue { get; set; }
         public List<(string ProgramName, int Count)> TopPrograms { get; set; } = new();
+        public int ExpiringSubscriptions { get; set; }
+        public List<Subscription> ExpiringSoonList { get; set; } = new();
 
         public async Task OnGetAsync()
         {
+            ViewData["ExpiringCount"] = ExpiringSubscriptions;
             TotalMembers = await _context.Members.CountAsync();
             ActiveMembers = await _context.Members.CountAsync(m => m.IsActive);
             TotalPrograms = await _context.GymPrograms.CountAsync();
@@ -48,6 +52,18 @@ namespace GymApp.Pages
                 .Take(5)
                 .ToListAsync()
                 .ContinueWith(t => t.Result.Select(g => (g.Name, g.Count)).ToList());
+
+            var sevenDaysFromNow = DateTime.Today.AddDays(7);
+            ExpiringSubscriptions = await _context.Subscriptions
+                .CountAsync(s => s.IsActive && s.EndDate <= sevenDaysFromNow);
+
+            ExpiringSoonList = await _context.Subscriptions
+                .Include(s => s.Member)
+                .Include(s => s.SubscriptionPlan)
+                    .ThenInclude(sp => sp.GymProgram)
+                .Where(s => s.IsActive && s.EndDate <= sevenDaysFromNow)
+                .OrderBy(s => s.EndDate)
+                .ToListAsync();
         }
     }
 }
