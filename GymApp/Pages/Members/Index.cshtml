@@ -18,7 +18,20 @@
             }
         </div>
     </form>
-
+    <div class="mb-3">
+        <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm"
+               class="btn @(Model.StatusFilter == null ? "btn-dark" : "btn-outline-dark")">
+            Όλα (@Model.Members.Count)
+        </a>
+        <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm" asp-route-StatusFilter="active"
+               class="btn @(Model.StatusFilter == "active" ? "btn-success" : "btn-outline-success")">
+            Ενεργά
+        </a>
+        <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm" asp-route-StatusFilter="inactive"
+               class="btn @(Model.StatusFilter == "inactive" ? "btn-secondary" : "btn-outline-secondary")">
+            Ανενεργά
+        </a>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>

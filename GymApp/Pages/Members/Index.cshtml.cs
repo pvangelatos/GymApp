@@ -20,6 +20,9 @@ namespace GymApp.Pages.Members
         [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string? StatusFilter { get; set; }
+
         public async Task OnGetAsync()
         {
             var query = _context.Members.AsQueryable();
@@ -32,6 +35,11 @@ namespace GymApp.Pages.Members
                     m.Lastname.ToLower().Contains(term) ||
                     (m.Phone != null && m.Phone.Contains(term)));
             }
+
+            if (StatusFilter == "active")
+                query = query.Where(m => m.IsActive);
+            else if (StatusFilter == "inactive")
+                query = query.Where(m => !m.IsActive);
 
             Members = await query
                 .OrderBy(m => m.Lastname)
