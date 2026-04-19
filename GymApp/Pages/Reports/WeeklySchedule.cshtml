@@ -53,7 +53,12 @@
                         }
                         @foreach (var slot in slots.OrderBy(s => s.TimeSlot.StartTime))
                         {
-                            <div class="card mb-2 @(slot.IsFull ? "border-danger" : "border-success")" style="font-size: 0.85rem;">
+                            var slotModalId = $"modal_{slot.TimeSlot.Id}_{date:yyyyMMdd}";
+    
+                            <div class="card mb-2 @(slot.IsFull ? "border-danger" : "border-success")"
+                                 style="font-size: 0.85rem; cursor: pointer;"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#@slotModalId">
                                 <div class="card-body p-2">
                                     <div class="fw-bold">@slot.TimeSlot.GymProgram.Name</div>
                                     <div class="text-muted">@slot.TimeSlot.StartTime.ToString("HH:mm")</div>
@@ -67,6 +72,95 @@
                                         {
                                             <span class="badge bg-success">@slot.AvailableCount/@slot.TimeSlot.Capacity</span>
                                         }
+                                    </div>
+                                    @if (slot.Bookings.Any())
+                                    {
+                                        <hr class="my-1" />
+                                        @foreach (var booking in slot.Bookings)
+                                        {
+                                            <div class="small">
+                                                @if (booking.Status == GymApp.Models.BookingStatus.Attended)
+                                                {
+                                                    <span class="text-success">✓</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-primary">●</span>
+                                                }
+                                                @booking.MemberName
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            @* Modal για κράτηση *@
+                            <div class="modal fade" id="@slotModalId" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                @slot.TimeSlot.GymProgram.Name — @slot.TimeSlot.StartTime.ToString("HH:mm") — @date.ToString("dd/MM/yyyy")
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-muted">Διαθέσιμες θέσεις: <strong>@slot.AvailableCount/@slot.TimeSlot.Capacity</strong></p>
+                    
+                                            @if (!slot.AvailableMembers.Any())
+                                            {
+                                                <div class="alert alert-info">Δεν υπάρχουν μέλη με ενεργή συνδρομή για αυτό το πρόγραμμα.</div>
+                                            }
+                                            else
+                                            {
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Μέλος</th>
+                                                            <th>Εναπομείνασες</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var member in slot.AvailableMembers.OrderBy(m => m.MemberName))
+                                                        {
+                                                            <tr class="@(member.AlreadyBooked ? "table-secondary" : "")">
+                                                                <td>@member.MemberName</td>
+                                                                <td>
+                                                                    @if (member.AlreadyBooked)
+                                                                    {
+                                                                        <span class="badge bg-secondary">Κλεισμένο</span>
+                                                                    }
+                                                                    else if (member.RemainingSessions <= 0)
+                                                                    {
+                                                                        <span class="badge bg-danger">Εξαντλήθηκαν</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="badge bg-success">@member.RemainingSessions</span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (!member.AlreadyBooked && member.RemainingSessions > 0 && !slot.IsFull)
+                                                                    {
+                                                                        <form method="post" asp-page-handler="Book">
+                                                                            <input type="hidden" name="BookingSubscriptionId" value="@member.SubscriptionId" />
+                                                                            <input type="hidden" name="BookingTimeSlotId" value="@slot.TimeSlot.Id" />
+                                                                            <input type="hidden" name="BookingDate" value="@date.ToString("yyyy-MM-dd")" />
+                                                                            <input type="hidden" name="WeekOffset" value="@Request.Query["weekOffset"]" />
+                                                                            <button type="submit" class="btn btn-sm btn-primary">Κράτηση</button>
+                                                                        </form>
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            }
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Κλείσιμο</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
