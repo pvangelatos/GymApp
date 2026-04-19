@@ -1,0 +1,86 @@
+﻿@page
+@model GymApp.Pages.Reports.RevenueModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>💰 Αναφορά Εσόδων</h2>
+        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
+    </div>
+
+    @* Σύνολα *@
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h6>Συνολικά Έσοδα</h6>
+                    <h3>@Model.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h6>Μέσος Μηνιαίος Τζίρος</h6>
+                    <h3>@Model.AverageMonthlyRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h6>Μήνες Δραστηριότητας</h6>
+                    <h3>@Model.MonthlyData.Count</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Πίνακας ανά μήνα *@
+    @if (!Model.MonthlyData.Any())
+    {
+        <div class="alert alert-info">Δεν υπάρχουν δεδομένα εσόδων.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Μήνας</th>
+                    <th>Αριθμός Συνδρομών</th>
+                    <th>Έσοδα</th>
+                    <th>Ποσοστό Συνόλου</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var month in Model.MonthlyData)
+                {
+                    var percentage = Model.TotalRevenue > 0
+                        ? (month.Revenue / Model.TotalRevenue * 100)
+                        : 0;
+                    <tr>
+                        <td>@month.MonthName</td>
+                        <td>@month.SubscriptionCount</td>
+                        <td><strong>@month.Revenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-success"
+                                         style="width: @percentage.ToString("F0")%"></div>
+                                </div>
+                                <small>@percentage.ToString("F1")%</small>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="table-dark">
+                <tr>
+                    <td><strong>Σύνολο</strong></td>
+                    <td><strong>@Model.MonthlyData.Sum(m => m.SubscriptionCount)</strong></td>
+                    <td><strong>@Model.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+</div>
