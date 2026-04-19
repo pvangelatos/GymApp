@@ -31,6 +31,8 @@ namespace GymApp
                     .AddSupportedUICultures(supportedCultures);
             });
 
+            builder.Services.AddHostedService<GymApp.Services.SubscriptionExpirationService>();
+
             var app = builder.Build();
 
             app.UseRequestLocalization();
