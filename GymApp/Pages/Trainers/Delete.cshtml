@@ -1,0 +1,30 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Trainers.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Εκπαιδευτή</h2>
+    <hr />
+
+    <div class="alert alert-danger">
+        Είστε σίγουροι ότι θέλετε να διαγράψετε τον παρακάτω εκπαιδευτή;
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Όνομα</dt>
+        <dd class="col-sm-9">@Model.Trainer.Firstname</dd>
+
+        <dt class="col-sm-3">Επώνυμο</dt>
+        <dd class="col-sm-9">@Model.Trainer.Lastname</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Trainer.Email</dd>
+
+        <dt class="col-sm-3">Τηλέφωνο</dt>
+        <dd class="col-sm-9">@Model.Trainer.Phone</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Διαγραφή</button>
+        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

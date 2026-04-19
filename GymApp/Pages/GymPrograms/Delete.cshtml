@@ -1,0 +1,30 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.GymPrograms.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Προγράμματος</h2>
+    <hr />
+
+    <div class="alert alert-danger">
+        Είστε σίγουροι ότι θέλετε να διαγράψετε το παρακάτω πρόγραμμα;
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Όνομα</dt>
+        <dd class="col-sm-9">@Model.GymProgram.Name</dd>
+
+        <dt class="col-sm-3">Περιγραφή</dt>
+        <dd class="col-sm-9">@Model.GymProgram.Description</dd>
+
+        <dt class="col-sm-3">Πρόγραμμα</dt>
+        <dd class="col-sm-9">@Model.GymProgram.Schedule</dd>
+
+        <dt class="col-sm-3">Εκπαιδευτής</dt>
+        <dd class="col-sm-9">@Model.GymProgram.Trainer.Firstname @Model.GymProgram.Trainer.Lastname</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Διαγραφή</button>
+        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

@@ -1,0 +1,42 @@
+﻿@page
+@model GymApp.Pages.Trainers.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Εκπαιδευτές</h2>
+        <a asp-page="Create" class="btn btn-primary">+ Νέος Εκπαιδευτής</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Επώνυμο</th>
+                <th>Όνομα</th>
+                <th>Email</th>
+                <th>Τηλέφωνο</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Trainers.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Δεν βρέθηκαν εκπαιδευτές.</td>
+                </tr>
+            }
+            @foreach (var trainer in Model.Trainers)
+            {
+                <tr>
+                    <td>@trainer.Lastname</td>
+                    <td>@trainer.Firstname</td>
+                    <td>@trainer.Email</td>
+                    <td>@trainer.Phone</td>
+                    <td>
+                        <a asp-page="Edit" asp-route-id="@trainer.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Delete" asp-route-id="@trainer.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

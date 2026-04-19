@@ -1,0 +1,42 @@
+﻿@page
+@model GymApp.Pages.GymPrograms.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Προγράμματα</h2>
+        <a asp-page="Create" class="btn btn-primary">+ Νέο Πρόγραμμα</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Όνομα</th>
+                <th>Περιγραφή</th>
+                <th>Πρόγραμμα</th>
+                <th>Εκπαιδευτής</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.GymPrograms.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Δεν βρέθηκαν προγράμματα.</td>
+                </tr>
+            }
+            @foreach (var program in Model.GymPrograms)
+            {
+                <tr>
+                    <td>@program.Name</td>
+                    <td>@program.Description</td>
+                    <td>@program.Schedule</td>
+                    <td>@program.Trainer.Firstname @program.Trainer.Lastname</td>
+                    <td>
+                        <a asp-page="Edit" asp-route-id="@program.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Delete" asp-route-id="@program.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

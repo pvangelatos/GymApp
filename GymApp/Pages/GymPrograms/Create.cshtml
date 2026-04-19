@@ -1,0 +1,39 @@
+﻿@page
+@model GymApp.Pages.GymPrograms.CreateModel
+
+<div class="container mt-4">
+    <h2>Νέο Πρόγραμμα</h2>
+    <hr />
+
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="GymProgram.Name" class="form-label">Όνομα</label>
+            <input asp-for="GymProgram.Name" class="form-control" />
+            <span asp-validation-for="GymProgram.Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="GymProgram.Description" class="form-label">Περιγραφή</label>
+            <textarea asp-for="GymProgram.Description" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label asp-for="GymProgram.Schedule" class="form-label">Πρόγραμμα</label>
+            <input asp-for="GymProgram.Schedule" class="form-control" placeholder="π.χ. Δευτ/Τετ 18:00" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="GymProgram.TrainerId" class="form-label">Εκπαιδευτής</label>
+            <select asp-for="GymProgram.TrainerId" asp-items="Model.TrainerList" class="form-select">
+                <option value="">-- Επιλέξτε Εκπαιδευτή --</option>
+            </select>
+            <span asp-validation-for="GymProgram.TrainerId" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
