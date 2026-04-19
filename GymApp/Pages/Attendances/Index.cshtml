@@ -1,0 +1,77 @@
+﻿@page "{subscriptionId:int}"
+@model GymApp.Pages.Attendances.IndexModel
+
+<div class="container mt-4">
+    <h2>Παρουσίες — @Model.Subscription.Member.Firstname @Model.Subscription.Member.Lastname</h2>
+    <p class="text-muted">
+        Πρόγραμμα: <strong>@Model.Subscription.SubscriptionPlan.GymProgram.Name</strong> |
+        Πακέτο: <strong>@Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες</strong> |
+        Περίοδος: <strong>@Model.Subscription.StartDate.ToShortDateString() — @Model.Subscription.EndDate.ToShortDateString()</strong>
+    </p>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">@Model.Attendances.Count</h5>
+                    <p class="card-text">Παρουσίες</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">@Model.RemainingSessions</h5>
+                    <p class="card-text">Υπολοιπόμενες</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.RemainingSessions > 0 && Model.Subscription.IsActive)
+    {
+        <form method="post" asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id">
+            <button type="submit" class="btn btn-success mb-3">+ Καταγραφή Παρουσίας</button>
+        </form>
+    }
+    else if (Model.RemainingSessions == 0)
+    {
+        <div class="alert alert-warning">Έχουν χρησιμοποιηθεί όλες οι συνεδρίες του μήνα.</div>
+    }
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Ημερομηνία</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Attendances.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Δεν υπάρχουν παρουσίες.</td>
+                </tr>
+            }
+            @{
+                int counter = 1;
+            }
+            @foreach (var attendance in Model.Attendances)
+            {
+                <tr>
+                    <td>@counter</td>
+                    <td>@attendance.Date.ToShortDateString()</td>
+                    <td>
+                        <form method="post" asp-page="Delete" asp-route-id="@attendance.Id">
+                            <button type="submit" class="btn btn-sm btn-danger">Διαγραφή</button>
+                        </form>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+
+    <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary mt-2">← Επιστροφή στις Συνδρομές</a>
+</div>
