@@ -1,0 +1,110 @@
+﻿@page "{subscriptionId:int}"
+@model GymApp.Pages.Payments.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h2>💳 Πληρωμές — @Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</h2>
+        <a asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id" class="btn btn-primary">+ Νέα Πληρωμή</a>
+    </div>
+    <p class="text-muted mb-3">
+        @Model.Subscription.SubscriptionPlan.GymProgram.Name —
+        @Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες —
+        @(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")
+    </p>
+
+    @* Σύνοψη *@
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary text-center">
+                <div class="card-body">
+                    <h6>Αξία Συνδρομής</h6>
+                    <h4>@Model.Subscription.AmountPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success text-center">
+                <div class="card-body">
+                    <h6>Καταβλήθηκε</h6>
+                    <h4>@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning text-center">
+                <div class="card-body">
+                    <h6>Υπόλοιπο</h6>
+                    <h4>@((Model.Subscription.AmountPaid - Model.TotalPaid).ToString("C", new System.Globalization.CultureInfo("el-GR")))</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info text-center">
+                <div class="card-body">
+                    <h6>Με Απόδειξη</h6>
+                    <h4>@Model.TotalWithReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Πίνακας πληρωμών *@
+    @if (!Model.Payments.Any())
+    {
+        <div class="alert alert-info">Δεν υπάρχουν πληρωμές για αυτή τη συνδρομή.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ημερομηνία</th>
+                    <th>Ποσό</th>
+                    <th>Τρόπος</th>
+                    <th>Απόδειξη</th>
+                    <th>Σημειώσεις</th>
+                    <th>Ενέργειες</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var payment in Model.Payments)
+                {
+                    <tr>
+                        <td>@payment.PaymentDate.ToShortDateString()</td>
+                        <td><strong>@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                        <td>
+                            @switch (payment.PaymentMethod)
+                            {
+                                case GymApp.Models.PaymentMethod.Cash:
+                                    <span class="badge bg-success">💵 Μετρητά</span>
+                                    break;
+                                case GymApp.Models.PaymentMethod.Card:
+                                    <span class="badge bg-primary">💳 Κάρτα</span>
+                                    break;
+                                case GymApp.Models.PaymentMethod.Transfer:
+                                    <span class="badge bg-info">🏦 Transfer</span>
+                                    break;
+                            }
+                        </td>
+                        <td>
+                            @if (payment.HasReceipt)
+                            {
+                                <span class="badge bg-success">✓ Ναι</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">✗ Όχι</span>
+                            }
+                        </td>
+                        <td>@payment.Notes</td>
+                        <td>
+                            <a asp-page="Delete" asp-route-id="@payment.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary mt-2">← Επιστροφή</a>
+</div>

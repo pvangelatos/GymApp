@@ -23,5 +23,6 @@ namespace GymApp.Models
         public SubscriptionPlan SubscriptionPlan { get; set; } = null!;
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

@@ -1,0 +1,28 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Payments.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Πληρωμής</h2>
+    <hr />
+
+    <div class="alert alert-danger">
+        Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την πληρωμή;
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Ημερομηνία</dt>
+        <dd class="col-sm-9">@Model.Payment.PaymentDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Ποσό</dt>
+        <dd class="col-sm-9">@Model.Payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</dd>
+
+        <dt class="col-sm-3">Απόδειξη</dt>
+        <dd class="col-sm-9">@(Model.Payment.HasReceipt ? "Ναι" : "Όχι")</dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Payment.SubscriptionId" />
+        <button type="submit" class="btn btn-danger">Διαγραφή</button>
+        <a asp-page="Index" asp-route-subscriptionId="@Model.Payment.SubscriptionId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

@@ -17,6 +17,7 @@ namespace GymApp.Data
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +50,16 @@ namespace GymApp.Data
                 .HasOne(b => b.Subscription)
                 .WithMany(s => s.Bookings)
                 .HasForeignKey(b => b.SubscriptionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.PaymentMethod)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Subscription)
+                .WithMany(s => s.Payments)
+                .HasForeignKey(p => p.SubscriptionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
