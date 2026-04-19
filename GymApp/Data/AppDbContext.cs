@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GymApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymApp.Data
 {
@@ -8,5 +9,13 @@ namespace GymApp.Data
            : base(options)
         {
         }
+
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Trainer> Trainers { get; set; }
+        public DbSet<GymProgram> GymPrograms { get; set; }
+        public DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+
     }
 }
