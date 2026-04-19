@@ -1,0 +1,125 @@
+﻿@page
+@model GymApp.Pages.Reports.AttendanceStatsModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📈 Στατιστικά Παρουσιών</h2>
+        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
+    </div>
+
+    @* Συνολικά στατιστικά *@
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary text-center">
+                <div class="card-body">
+                    <h6>Σύνολο Κρατήσεων</h6>
+                    <h3>@Model.TotalBookings</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success text-center">
+                <div class="card-body">
+                    <h6>Παρουσίες</h6>
+                    <h3>@Model.TotalAttended</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger text-center">
+                <div class="card-body">
+                    <h6>No Show</h6>
+                    <h3>@Model.TotalNoShow</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary text-center">
+                <div class="card-body">
+                    <h6>Ακυρώσεις</h6>
+                    <h3>@Model.TotalCancelled</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Στατιστικά ανά μέλος *@
+    <h5 class="mb-3">👤 Ανά Μέλος</h5>
+    <table class="table table-striped mb-4">
+        <thead>
+            <tr>
+                <th>Μέλος</th>
+                <th>Κρατήσεις</th>
+                <th>Παρουσίες</th>
+                <th>No Show</th>
+                <th>Ακυρώσεις</th>
+                <th>Ποσοστό Παρουσίας</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.MemberStatsList.Any())
+            {
+                <tr><td colspan="6" class="text-center text-muted">Δεν υπάρχουν δεδομένα.</td></tr>
+            }
+            @foreach (var member in Model.MemberStatsList)
+            {
+                <tr>
+                    <td>@member.MemberName</td>
+                    <td>@member.TotalBookings</td>
+                    <td><span class="badge bg-success">@member.Attended</span></td>
+                    <td><span class="badge bg-danger">@member.NoShow</span></td>
+                    <td><span class="badge bg-secondary">@member.Cancelled</span></td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height: 8px;">
+                                <div class="progress-bar bg-success"
+                                     style="width: @member.AttendanceRate%"></div>
+                            </div>
+                            <small>@member.AttendanceRate%</small>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* Στατιστικά ανά πρόγραμμα *@
+    <h5 class="mb-3">🏋️ Ανά Πρόγραμμα</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Πρόγραμμα</th>
+                <th>Κρατήσεις</th>
+                <th>Παρουσίες</th>
+                <th>No Show</th>
+                <th>Ακυρώσεις</th>
+                <th>Ποσοστό Παρουσίας</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.ProgramStatsList.Any())
+            {
+                <tr><td colspan="6" class="text-center text-muted">Δεν υπάρχουν δεδομένα.</td></tr>
+            }
+            @foreach (var program in Model.ProgramStatsList)
+            {
+                <tr>
+                    <td>@program.ProgramName</td>
+                    <td>@program.TotalBookings</td>
+                    <td><span class="badge bg-success">@program.Attended</span></td>
+                    <td><span class="badge bg-danger">@program.NoShow</span></td>
+                    <td><span class="badge bg-secondary">@program.Cancelled</span></td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height: 8px;">
+                                <div class="progress-bar bg-success"
+                                     style="width: @program.AttendanceRate%"></div>
+                            </div>
+                            <small>@program.AttendanceRate%</small>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
