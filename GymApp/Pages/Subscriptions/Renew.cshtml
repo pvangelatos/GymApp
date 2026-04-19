@@ -1,0 +1,48 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Subscriptions.RenewModel
+
+<div class="container mt-4">
+    <h2>Ανανέωση Συνδρομής — @Model.OldSubscription.Member.Firstname @Model.OldSubscription.Member.Lastname</h2>
+    <hr />
+
+    <div class="alert alert-info mb-4">
+        <strong>Τρέχουσα συνδρομή:</strong>
+        @Model.OldSubscription.SubscriptionPlan.GymProgram.Name —
+        @Model.OldSubscription.SubscriptionPlan.SessionsPerMonth συνεδρίες —
+        @(Model.OldSubscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα") —
+        Λήξη: @Model.OldSubscription.EndDate.ToShortDateString()
+    </div>
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-0">@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <form method="post">
+        <input type="hidden" asp-for="NewSubscription.MemberId" />
+        <input type="hidden" name="oldSubscriptionId" value="@Model.OldSubscription.Id" /> 
+
+
+        <div class="mb-3">
+            <label asp-for="NewSubscription.SubscriptionPlanId" class="form-label">Πακέτο</label>
+            <select asp-for="NewSubscription.SubscriptionPlanId" asp-items="Model.PlanList" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NewSubscription.SessionType" class="form-label">Τμήμα</label>
+            <select asp-for="NewSubscription.SessionType" asp-items="Model.SessionTypeList" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NewSubscription.StartDate" class="form-label">Ημερομηνία Έναρξης</label>
+            <input asp-for="NewSubscription.StartDate" type="date" class="form-control"
+                   value="@Model.NewSubscription.StartDate.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Ανανέωση</button>
+        <a asp-page="Index" asp-route-memberId="@Model.OldSubscription.MemberId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>
