@@ -15,7 +15,41 @@ namespace GymApp.Data
         public DbSet<GymProgram> GymPrograms { get; set; }
         public DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<TimeSlot> TimeSlots { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Μετατροπή enum σε string στη βάση (πιο ευανάγνωστο)
+            modelBuilder.Entity<Subscription>()
+                .Property(s => s.SessionType)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<TimeSlot>()
+                .Property(t => t.SessionType)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.Status)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<TimeSlot>()
+                .Property(t => t.StartTime)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => TimeOnly.Parse(v));
+
+            modelBuilder.Entity<Booking>()
+            .HasOne(b => b.TimeSlot)
+            .WithMany(t => t.Bookings)
+            .HasForeignKey(b => b.TimeSlotId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Subscription)
+                .WithMany(s => s.Bookings)
+                .HasForeignKey(b => b.SubscriptionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

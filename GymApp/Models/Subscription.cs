@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace GymApp.Models
 {
@@ -15,9 +15,13 @@ namespace GymApp.Models
         [Precision(10, 2)]
         public decimal AmountPaid { get; set; }
 
+        [Required]
+        public SessionType SessionType { get; set; }
+
         // Navigation properties
         public Member Member { get; set; } = null!;
         public SubscriptionPlan SubscriptionPlan { get; set; } = null!;
-        public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
     }
 }
