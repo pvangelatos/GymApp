@@ -1,0 +1,38 @@
+﻿@page
+@model GymApp.Pages.Members.CreateModel
+
+<div class="container mt-4">
+    <h2>Νέο Μέλος</h2>
+    <hr />
+
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Member.Firstname" class="form-label">Όνομα</label>
+            <input asp-for="Member.Firstname" class="form-control" />
+            <span asp-validation-for="Member.Firstname" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Member.Lastname" class="form-label">Επώνυμο</label>
+            <input asp-for="Member.Lastname" class="form-control" />
+            <span asp-validation-for="Member.Lastname" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Member.Email" class="form-label">Email</label>
+            <input asp-for="Member.Email" class="form-control" />
+            <span asp-validation-for="Member.Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Member.Phone" class="form-label">Τηλέφωνο</label>
+            <input asp-for="Member.Phone" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

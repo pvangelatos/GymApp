@@ -1,0 +1,39 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Members.DetailsModel
+
+<div class="container mt-4">
+    <h2>Στοιχεία Μέλους</h2>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">Όνομα</dt>
+        <dd class="col-sm-9">@Model.Member.Firstname</dd>
+
+        <dt class="col-sm-3">Επώνυμο</dt>
+        <dd class="col-sm-9">@Model.Member.Lastname</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Member.Email</dd>
+
+        <dt class="col-sm-3">Τηλέφωνο</dt>
+        <dd class="col-sm-9">@Model.Member.Phone</dd>
+
+        <dt class="col-sm-3">Ημερομηνία Εγγραφής</dt>
+        <dd class="col-sm-9">@Model.Member.DateJoined.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Κατάσταση</dt>
+        <dd class="col-sm-9">
+            @if (Model.Member.IsActive)
+            {
+                <span class="badge bg-success">Ενεργό</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Ανενεργό</span>
+            }
+        </dd>
+    </dl>
+
+    <a asp-page="Edit" asp-route-id="@Model.Member.Id" class="btn btn-warning">Επεξεργασία</a>
+    <a asp-page="Index" class="btn btn-secondary">Επιστροφή</a>
+</div>

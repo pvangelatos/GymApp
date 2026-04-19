@@ -1,0 +1,30 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Members.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Μέλους</h2>
+    <hr />
+
+    <div class="alert alert-warning">
+        Είστε σίγουροι ότι θέλετε να απενεργοποιήσετε το παρακάτω μέλος;
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Όνομα</dt>
+        <dd class="col-sm-9">@Model.Member.Firstname</dd>
+
+        <dt class="col-sm-3">Επώνυμο</dt>
+        <dd class="col-sm-9">@Model.Member.Lastname</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Member.Email</dd>
+
+        <dt class="col-sm-3">Τηλέφωνο</dt>
+        <dd class="col-sm-9">@Model.Member.Phone</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Απενεργοποίηση</button>
+        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

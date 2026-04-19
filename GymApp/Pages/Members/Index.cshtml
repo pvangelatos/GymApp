@@ -1,0 +1,50 @@
+﻿@page
+@model GymApp.Pages.Members.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Μέλη</h2>
+        <a asp-page="Create" class="btn btn-primary">+ Νέο Μέλος</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Επώνυμο</th>
+                <th>Όνομα</th>
+                <th>Email</th>
+                <th>Τηλέφωνο</th>
+                <th>Εγγραφή</th>
+                <th>Κατάσταση</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model.Members)
+            {
+                <tr>
+                    <td>@member.Lastname</td>
+                    <td>@member.Firstname</td>
+                    <td>@member.Email</td>
+                    <td>@member.Phone</td>
+                    <td>@member.DateJoined.ToShortDateString()</td>
+                    <td>
+                        @if (member.IsActive)
+                        {
+                            <span class="badge bg-success">Ενεργό</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Ανενεργό</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="Edit" asp-route-id="@member.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Details" asp-route-id="@member.Id" class="btn btn-sm btn-info">Λεπτομέρειες</a>
+                        <a asp-page="Delete" asp-route-id="@member.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
