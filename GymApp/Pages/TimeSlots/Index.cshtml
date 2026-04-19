@@ -1,0 +1,72 @@
+﻿@page "{gymProgramId:int}"
+@model GymApp.Pages.TimeSlots.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h2>Πρόγραμμα — @Model.GymProgram.Name</h2>
+        <a asp-page="Create" asp-route-gymProgramId="@Model.GymProgram.Id" class="btn btn-primary">+ Νέο Slot</a>
+    </div>
+    <p class="text-muted mb-4">Εκπαιδευτής: @Model.GymProgram.Trainer.Firstname @Model.GymProgram.Trainer.Lastname</p>
+
+    <h5>🌅 Πρωινά Τμήματα</h5>
+    <table class="table table-striped mb-4">
+        <thead>
+            <tr>
+                <th>Ημέρα</th>
+                <th>Ώρα</th>
+                <th>Θέσεις</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.MorningSlots.Any())
+            {
+                <tr><td colspan="4" class="text-center text-muted">Δεν υπάρχουν πρωινά slots.</td></tr>
+            }
+            @foreach (var slot in Model.MorningSlots)
+            {
+                <tr>
+                    <td>@slot.DayOfWeek</td>
+                    <td>@slot.StartTime.ToString("HH:mm")</td>
+                    <td>@slot.Capacity</td>
+                    <td>
+                        <a asp-page="Edit" asp-route-id="@slot.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Delete" asp-route-id="@slot.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5>🌆 Απογευματινά Τμήματα</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ημέρα</th>
+                <th>Ώρα</th>
+                <th>Θέσεις</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.AfternoonSlots.Any())
+            {
+                <tr><td colspan="4" class="text-center text-muted">Δεν υπάρχουν απογευματινά slots.</td></tr>
+            }
+            @foreach (var slot in Model.AfternoonSlots)
+            {
+                <tr>
+                    <td>@slot.DayOfWeek</td>
+                    <td>@slot.StartTime.ToString("HH:mm")</td>
+                    <td>@slot.Capacity</td>
+                    <td>
+                        <a asp-page="Edit" asp-route-id="@slot.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Delete" asp-route-id="@slot.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-page="/GymPrograms/Index" class="btn btn-secondary mt-2">← Επιστροφή στα Προγράμματα</a>
+</div>

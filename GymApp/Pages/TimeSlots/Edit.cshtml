@@ -1,0 +1,32 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.TimeSlots.EditModel
+
+<div class="container mt-4">
+    <h2>Επεξεργασία Slot</h2>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" asp-for="TimeSlot.Id" />
+        <input type="hidden" asp-for="TimeSlot.GymProgramId" />
+
+        <div class="mb-3">
+            <label asp-for="TimeSlot.DayOfWeek" class="form-label">Ημέρα</label>
+            <select asp-for="TimeSlot.DayOfWeek" asp-items="Model.DayOfWeekList" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TimeSlot.StartTime" class="form-label">Ώρα Έναρξης</label>
+            <input asp-for="TimeSlot.StartTime" type="time" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="TimeSlot.SessionType" class="form-label">Τμήμα</label>
+            <select asp-for="TimeSlot.SessionType" asp-items="Model.SessionTypeList" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TimeSlot.Capacity" class="form-label">Θέσεις</label>
+            <input asp-for="TimeSlot.Capacity" type="number" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+        <a asp-page="Index" asp-route-gymProgramId="@Model.TimeSlot.GymProgramId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

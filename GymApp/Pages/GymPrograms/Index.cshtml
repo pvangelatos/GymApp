@@ -33,6 +33,7 @@
                     <td>@program.Trainer.Firstname @program.Trainer.Lastname</td>
                     <td>
                         <a asp-page="/SubscriptionPlans/Index" asp-route-gymProgramId="@program.Id" class="btn btn-sm btn-info">Πακέτα</a>
+                        <a asp-page="/TimeSlots/Index" asp-route-gymProgramId="@program.Id" class="btn btn-sm btn-secondary">Πρόγραμμα</a>
                         <a asp-page="Edit" asp-route-id="@program.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
                         <a asp-page="Delete" asp-route-id="@program.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
                     </td>

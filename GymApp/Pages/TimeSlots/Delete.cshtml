@@ -1,0 +1,35 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.TimeSlots.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Slot</h2>
+    <hr />
+
+    <div class="alert alert-danger">
+        Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το slot;
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Πρόγραμμα</dt>
+        <dd class="col-sm-9">@Model.TimeSlot.GymProgram.Name</dd>
+
+        <dt class="col-sm-3">Ημέρα</dt>
+        <dd class="col-sm-9">@Model.TimeSlot.DayOfWeek</dd>
+
+        <dt class="col-sm-3">Ώρα</dt>
+        <dd class="col-sm-9">@Model.TimeSlot.StartTime.ToString("HH:mm")</dd>
+
+        <dt class="col-sm-3">Τμήμα</dt>
+        <dd class="col-sm-9">@(Model.TimeSlot.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</dd>
+
+        <dt class="col-sm-3">Θέσεις</dt>
+        <dd class="col-sm-9">@Model.TimeSlot.Capacity</dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="TimeSlot.Id" />
+        <input type="hidden" asp-for="TimeSlot.GymProgramId" />
+        <button type="submit" class="btn btn-danger">Διαγραφή</button>
+        <a asp-page="Index" asp-route-gymProgramId="@Model.TimeSlot.GymProgramId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

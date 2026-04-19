@@ -1,0 +1,45 @@
+﻿@page "{gymProgramId:int}"
+@model GymApp.Pages.TimeSlots.CreateModel
+
+<div class="container mt-4">
+    <h2>Νέο Slot — @Model.GymProgram.Name</h2>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" asp-for="TimeSlot.GymProgramId" />
+
+        <div class="mb-3">
+            <label asp-for="TimeSlot.DayOfWeek" class="form-label">Ημέρα</label>
+            <select asp-for="TimeSlot.DayOfWeek" asp-items="Model.DayOfWeekList" class="form-select">
+                <option value="">-- Επιλέξτε Ημέρα --</option>
+            </select>
+            <span asp-validation-for="TimeSlot.DayOfWeek" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TimeSlot.StartTime" class="form-label">Ώρα Έναρξης</label>
+            <input asp-for="TimeSlot.StartTime" type="time" class="form-control" />
+            <span asp-validation-for="TimeSlot.StartTime" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TimeSlot.SessionType" class="form-label">Τμήμα</label>
+            <select asp-for="TimeSlot.SessionType" asp-items="Model.SessionTypeList" class="form-select">
+                <option value="">-- Επιλέξτε Τμήμα --</option>
+            </select>
+            <span asp-validation-for="TimeSlot.SessionType" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TimeSlot.Capacity" class="form-label">Θέσεις</label>
+            <input asp-for="TimeSlot.Capacity" type="number" class="form-control" />
+            <span asp-validation-for="TimeSlot.Capacity" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+        <a asp-page="Index" asp-route-gymProgramId="@Model.TimeSlot.GymProgramId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
