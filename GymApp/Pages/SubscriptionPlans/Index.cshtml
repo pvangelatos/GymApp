@@ -1,0 +1,41 @@
+﻿@page "{gymProgramId:int}"
+@model GymApp.Pages.SubscriptionPlans.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h2>Πακέτα — @Model.GymProgram.Name</h2>
+        <a asp-page="Create" asp-route-gymProgramId="@Model.GymProgram.Id" class="btn btn-primary">+ Νέο Πακέτο</a>
+    </div>
+    <p class="text-muted mb-3">Εκπαιδευτής: @Model.GymProgram.Trainer.Firstname @Model.GymProgram.Trainer.Lastname</p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Συνεδρίες/μήνα</th>
+                <th>Τιμή</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Plans.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Δεν υπάρχουν πακέτα για αυτό το πρόγραμμα.</td>
+                </tr>
+            }
+            @foreach (var plan in Model.Plans)
+            {
+                <tr>
+                    <td>@plan.SessionsPerMonth συνεδρίες</td>
+                    <td>@plan.Price.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
+                    <td>
+                        <a asp-page="Edit" asp-route-id="@plan.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Delete" asp-route-id="@plan.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-page="/GymPrograms/Index" class="btn btn-secondary mt-2">← Επιστροφή στα Προγράμματα</a>
+</div>

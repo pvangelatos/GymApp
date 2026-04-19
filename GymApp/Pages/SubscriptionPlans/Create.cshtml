@@ -1,0 +1,36 @@
+﻿@page "{gymProgramId:int}"
+@model GymApp.Pages.SubscriptionPlans.CreateModel
+
+<div class="container mt-4">
+    <h2>Νέο Πακέτο — @Model.GymProgram.Name</h2>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" asp-for="Plan.GymProgramId" />
+
+        <div class="mb-3">
+            <label asp-for="Plan.SessionsPerMonth" class="form-label">Συνεδρίες ανά μήνα</label>
+            <select asp-for="Plan.SessionsPerMonth" class="form-select">
+                <option value="">-- Επιλέξτε --</option>
+                <option value="4">4 συνεδρίες</option>
+                <option value="8">8 συνεδρίες</option>
+                <option value="12">12 συνεδρίες</option>
+            </select>
+            <span asp-validation-for="Plan.SessionsPerMonth" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Plan.Price" class="form-label">Τιμή (€)</label>
+            <input asp-for="Plan.Price" class="form-control" />
+            <span asp-validation-for="Plan.Price" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+        <a asp-page="Index" asp-route-gymProgramId="@Model.Plan.GymProgramId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

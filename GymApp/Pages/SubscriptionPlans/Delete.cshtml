@@ -1,0 +1,27 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.SubscriptionPlans.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Πακέτου</h2>
+    <hr />
+
+    <div class="alert alert-danger">
+        Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το πακέτο;
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Πρόγραμμα</dt>
+        <dd class="col-sm-9">@Model.Plan.GymProgram.Name</dd>
+
+        <dt class="col-sm-3">Συνεδρίες/μήνα</dt>
+        <dd class="col-sm-9">@Model.Plan.SessionsPerMonth</dd>
+
+        <dt class="col-sm-3">Τιμή</dt>
+        <dd class="col-sm-9">@Model.Plan.Price.ToString("C", new System.Globalization.CultureInfo("el-GR"))</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Διαγραφή</button>
+        <a asp-page="Index" asp-route-gymProgramId="@Model.Plan.GymProgramId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>
