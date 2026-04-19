@@ -25,6 +25,7 @@ namespace GymApp.Pages.Subscriptions
         public Member Member { get; set; } = default!;
         public SelectList ProgramList { get; set; } = default!;
         public SelectList? PlanList { get; set; }
+        public SelectList? SessionTypeList { get; set; }
         public bool ProgramSelected { get; set; } = false;
 
         public async Task<IActionResult> OnGetAsync(int memberId)
@@ -40,7 +41,6 @@ namespace GymApp.Pages.Subscriptions
             return Page();
         }
 
-        // Όταν πατάς "Επιλογή Προγράμματος"
         public async Task<IActionResult> OnPostSelectProgramAsync()
         {
             ModelState.Clear();
@@ -50,33 +50,24 @@ namespace GymApp.Pages.Subscriptions
 
             await LoadProgramListAsync();
             await LoadPlanListAsync(SelectedProgramId);
+            LoadSessionTypeList(SelectedProgramId);
 
             ProgramSelected = true;
             return Page();
         }
 
-        // Όταν πατάς "Αποθήκευση"
         public async Task<IActionResult> OnPostSaveAsync()
         {
             ModelState.Remove("Subscription.Member");
             ModelState.Remove("Subscription.SubscriptionPlan");
-            ModelState.Remove("SelectedProgramId");
 
             if (!ModelState.IsValid)
             {
-                
-                foreach (var state in ModelState)
-                {
-                    if (state.Value.Errors.Any())
-                    {
-                        Console.WriteLine($"Field: {state.Key}, Error: {state.Value.Errors.First().ErrorMessage}");
-                    }
-                }
-
                 var member = await _context.Members.FindAsync(Subscription.MemberId);
                 Member = member!;
                 await LoadProgramListAsync();
                 await LoadPlanListAsync(SelectedProgramId);
+                LoadSessionTypeList(SelectedProgramId);
                 ProgramSelected = true;
                 return Page();
             }
@@ -96,11 +87,28 @@ namespace GymApp.Pages.Subscriptions
                 Member = member!;
                 await LoadProgramListAsync();
                 await LoadPlanListAsync(SelectedProgramId);
+                LoadSessionTypeList(SelectedProgramId);
                 ProgramSelected = true;
                 return Page();
             }
 
+            // Έλεγχος διαθέσιμων θέσεων
+            var availableSlots = await GetAvailableSlotsAsync(SelectedProgramId, Subscription.SessionType);
             var plan = await _context.SubscriptionPlans.FindAsync(Subscription.SubscriptionPlanId);
+            var requiredSlots = plan!.SessionsPerMonth / 4;
+
+            if (availableSlots < requiredSlots)
+            {
+                ModelState.AddModelError("", $"Δεν υπάρχουν αρκετές διαθέσιμες θέσεις. Διαθέσιμες: {availableSlots}, Απαιτούμενες: {requiredSlots}.");
+                var member = await _context.Members.FindAsync(Subscription.MemberId);
+                Member = member!;
+                await LoadProgramListAsync();
+                await LoadPlanListAsync(SelectedProgramId);
+                LoadSessionTypeList(SelectedProgramId);
+                ProgramSelected = true;
+                return Page();
+            }
+
             Subscription.EndDate = Subscription.StartDate.AddMonths(1);
             Subscription.AmountPaid = plan!.Price;
             Subscription.IsActive = true;
@@ -109,6 +117,24 @@ namespace GymApp.Pages.Subscriptions
             await _context.SaveChangesAsync();
 
             return RedirectToPage("Index", new { memberId = Subscription.MemberId });
+        }
+
+        private async Task<int> GetAvailableSlotsAsync(int gymProgramId, SessionType sessionType)
+        {
+            // Συνολικές θέσεις/εβδομάδα για το τμήμα
+            var totalSlots = await _context.TimeSlots
+                .Where(t => t.GymProgramId == gymProgramId && t.SessionType == sessionType)
+                .SumAsync(t => t.Capacity);
+
+            // Δεσμευμένες θέσεις από ενεργές συνδρομές
+            var occupiedSlots = await _context.Subscriptions
+                .Include(s => s.SubscriptionPlan)
+                .Where(s => s.IsActive
+                    && s.SessionType == sessionType
+                    && s.SubscriptionPlan.GymProgramId == gymProgramId)
+                .SumAsync(s => s.SubscriptionPlan.SessionsPerMonth / 4);
+
+            return totalSlots - occupiedSlots;
         }
 
         private async Task LoadProgramListAsync()
@@ -134,6 +160,30 @@ namespace GymApp.Pages.Subscriptions
                 .ToListAsync();
 
             PlanList = new SelectList(plans, "Id", "Description");
+        }
+
+        private void LoadSessionTypeList(int gymProgramId)
+        {
+            var availableSessionTypes = _context.TimeSlots
+                .Where(t => t.GymProgramId == gymProgramId)
+                .Select(t => t.SessionType)
+                .Distinct()
+                .ToList();
+
+            var sessionTypeItems = new List<object>();
+            if (availableSessionTypes.Contains(SessionType.Morning))
+                sessionTypeItems.Add(new { Value = "Morning", Text = "Πρωί" });
+            if (availableSessionTypes.Contains(SessionType.Afternoon))
+                sessionTypeItems.Add(new { Value = "Afternoon", Text = "Απόγευμα" });
+
+            // Αν δεν υπάρχουν TimeSlots εμφάνισε και τα δύο
+            if (!sessionTypeItems.Any())
+            {
+                sessionTypeItems.Add(new { Value = "Morning", Text = "Πρωί" });
+                sessionTypeItems.Add(new { Value = "Afternoon", Text = "Απόγευμα" });
+            }
+
+            SessionTypeList = new SelectList(sessionTypeItems, "Value", "Text");
         }
     }
 }

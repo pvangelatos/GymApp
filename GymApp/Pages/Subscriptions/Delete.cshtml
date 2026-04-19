@@ -1,0 +1,37 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Subscriptions.DeleteModel
+
+<div class="container mt-4">
+    <h2>Διαγραφή Συνδρομής</h2>
+    <hr />
+
+    <div class="alert alert-danger">
+        Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη συνδρομή; Θα διαγραφούν και όλες οι σχετικές κρατήσεις.
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Μέλος</dt>
+        <dd class="col-sm-9">@Model.Subscription.Member.Firstname @Model.Subscription.Member.Lastname</dd>
+
+        <dt class="col-sm-3">Πρόγραμμα</dt>
+        <dd class="col-sm-9">@Model.Subscription.SubscriptionPlan.GymProgram.Name</dd>
+
+        <dt class="col-sm-3">Πακέτο</dt>
+        <dd class="col-sm-9">@Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες</dd>
+
+        <dt class="col-sm-3">Τμήμα</dt>
+        <dd class="col-sm-9">@(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</dd>
+
+        <dt class="col-sm-3">Έναρξη</dt>
+        <dd class="col-sm-9">@Model.Subscription.StartDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Λήξη</dt>
+        <dd class="col-sm-9">@Model.Subscription.EndDate.ToShortDateString()</dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Subscription.MemberId" />
+        <button type="submit" class="btn btn-danger">Διαγραφή</button>
+        <a asp-page="Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

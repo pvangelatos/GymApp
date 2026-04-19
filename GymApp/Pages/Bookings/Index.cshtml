@@ -1,0 +1,114 @@
+﻿@page "{subscriptionId:int}"
+@model GymApp.Pages.Bookings.IndexModel
+
+<div class="container mt-4">
+    <h2>Κρατήσεις — @Model.Subscription.Member.Firstname @Model.Subscription.Member.Lastname</h2>
+    <p class="text-muted">
+        Πρόγραμμα: <strong>@Model.Subscription.SubscriptionPlan.GymProgram.Name</strong> |
+        Τμήμα: <strong>@(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</strong> |
+        Πακέτο: <strong>@Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες</strong>
+    </p>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <h5 class="text-success">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.Attended)</h5>
+                    <p class="mb-0">Παρουσίες</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-primary">
+                <div class="card-body">
+                    <h5 class="text-primary">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.Booked)</h5>
+                    <p class="mb-0">Κρατήσεις</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <h5 class="text-warning">@Model.RemainingSessions</h5>
+                    <p class="mb-0">Εναπομείνασες</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-danger">
+                <div class="card-body">
+                    <h5 class="text-danger">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.NoShow)</h5>
+                    <p class="mb-0">No Show</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.RemainingSessions > 0 && Model.Subscription.IsActive)
+    {
+        <a asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id" class="btn btn-success mb-3">+ Νέα Κράτηση</a>
+    }
+    else if (Model.RemainingSessions == 0)
+    {
+        <div class="alert alert-warning">Έχουν χρησιμοποιηθεί όλες οι συνεδρίες.</div>
+    }
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ημερομηνία</th>
+                <th>Ώρα</th>
+                <th>Κατάσταση</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Bookings.Any())
+            {
+                <tr>
+                    <td colspan="4" class="text-center text-muted">Δεν υπάρχουν κρατήσεις.</td>
+                </tr>
+            }
+            @foreach (var booking in Model.Bookings)
+            {
+                <tr>
+                    <td>@booking.BookingDate.ToShortDateString()</td>
+                    <td>@booking.TimeSlot.StartTime.ToString("HH:mm")</td>
+                    <td>
+                        @switch (booking.Status)
+                        {
+                            case GymApp.Models.BookingStatus.Booked:
+                                <span class="badge bg-primary">Κράτηση</span>
+                                break;
+                            case GymApp.Models.BookingStatus.Attended:
+                                <span class="badge bg-success">Παρουσία</span>
+                                break;
+                            case GymApp.Models.BookingStatus.Cancelled:
+                                <span class="badge bg-secondary">Ακυρώθηκε</span>
+                                break;
+                            case GymApp.Models.BookingStatus.NoShow:
+                                <span class="badge bg-danger">No Show</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @if (booking.Status == GymApp.Models.BookingStatus.Booked)
+                        {
+                            <form method="post" asp-page="UpdateStatus" asp-route-id="@booking.Id" asp-route-status="Attended" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-success">✓ Παρουσία</button>
+                            </form>
+                            <form method="post" asp-page="Cancel" asp-route-id="@booking.Id" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-warning">Ακύρωση</button>
+                            </form>
+                            <form method="post" asp-page="UpdateStatus" asp-route-id="@booking.Id" asp-route-status="NoShow" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-danger">No Show</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary mt-2">← Επιστροφή</a>
+</div>

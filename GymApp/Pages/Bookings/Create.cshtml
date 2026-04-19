@@ -1,0 +1,68 @@
+﻿@page "{subscriptionId:int}"
+@model GymApp.Pages.Bookings.CreateModel
+
+<div class="container mt-4">
+    <h2>Νέα Κράτηση — @Model.Subscription.Member.Firstname @Model.Subscription.Member.Lastname</h2>
+    <p class="text-muted">
+        @Model.Subscription.SubscriptionPlan.GymProgram.Name —
+        @(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")
+    </p>
+    <hr />
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-0">@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    @* Βήμα 1: Επιλογή Ημερομηνίας *@
+    <form method="post" asp-page-handler="SelectDate">
+        <input type="hidden" asp-for="Booking.SubscriptionId" />
+
+        <div class="mb-3">
+            <label class="form-label">Βήμα 1: Επιλέξτε Ημερομηνία</label>
+            <div class="input-group">
+                <input asp-for="SelectedDate" type="date" class="form-control"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                <button type="submit" class="btn btn-outline-primary">Επιλογή →</button>
+            </div>
+        </div>
+    </form>
+
+    @* Βήμα 2: Επιλογή Ώρας *@
+    @if (Model.DateSelected && Model.TimeSlotList != null && Model.TimeSlotList.Any())
+    {
+        <form method="post" asp-page-handler="Save">
+            <input type="hidden" asp-for="Booking.SubscriptionId" />
+            <input type="hidden" asp-for="SelectedDate" />
+
+            <div class="mb-3">
+                <label asp-for="Booking.TimeSlotId" class="form-label">Βήμα 2: Επιλέξτε Ώρα</label>
+                <select asp-for="Booking.TimeSlotId" asp-items="Model.TimeSlotList" class="form-select">
+                    <option value="">-- Επιλέξτε Ώρα --</option>
+                </select>
+                <span asp-validation-for="Booking.TimeSlotId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+            <a asp-page="Index" asp-route-subscriptionId="@Model.Booking.SubscriptionId" class="btn btn-secondary">Ακύρωση</a>
+        </form>
+    }
+    else if (Model.DateSelected)
+    {
+        <div class="alert alert-warning">
+            Δεν υπάρχουν διαθέσιμες ώρες για αυτή την ημερομηνία.
+        </div>
+        <a asp-page="Index" asp-route-subscriptionId="@Model.Booking.SubscriptionId" class="btn btn-secondary">Επιστροφή</a>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

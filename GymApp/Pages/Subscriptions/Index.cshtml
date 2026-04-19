@@ -45,7 +45,9 @@
                         }
                     </td>
                     <td>
-                        
+                        <a asp-page="/Bookings/Index" asp-route-subscriptionId="@sub.Id" class="btn btn-sm btn-info">Κρατήσεις</a>
+                        <a asp-page="Edit" asp-route-id="@sub.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
+                        <a asp-page="Delete" asp-route-id="@sub.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
                     </td>
                 </tr>
             }

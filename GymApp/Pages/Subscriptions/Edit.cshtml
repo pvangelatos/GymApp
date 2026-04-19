@@ -1,0 +1,42 @@
+﻿@page "{id:int}"
+@model GymApp.Pages.Subscriptions.EditModel
+
+<div class="container mt-4">
+    <h2>Επεξεργασία Συνδρομής — @Model.Member.Firstname @Model.Member.Lastname</h2>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" asp-for="Subscription.Id" />
+        <input type="hidden" asp-for="Subscription.MemberId" />
+        <input type="hidden" asp-for="Subscription.SubscriptionPlanId" />
+        <input type="hidden" asp-for="Subscription.AmountPaid" />
+
+        <div class="mb-3">
+            <label asp-for="Subscription.SubscriptionPlanId" class="form-label">Πακέτο</label>
+            <select asp-for="Subscription.SubscriptionPlanId" asp-items="Model.PlanList" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Subscription.SessionType" class="form-label">Τμήμα</label>
+            <select asp-for="Subscription.SessionType" asp-items="Model.SessionTypeList" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Subscription.StartDate" class="form-label">Ημερομηνία Έναρξης</label>
+            <input asp-for="Subscription.StartDate" type="date" class="form-control"
+                   value="@Model.Subscription.StartDate.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Subscription.EndDate" class="form-label">Ημερομηνία Λήξης</label>
+            <input asp-for="Subscription.EndDate" type="date" class="form-control"
+                   value="@Model.Subscription.EndDate.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input asp-for="Subscription.IsActive" class="form-check-input" />
+                <label asp-for="Subscription.IsActive" class="form-check-label">Ενεργή</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
+        <a asp-page="Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary">Ακύρωση</a>
+    </form>
+</div>

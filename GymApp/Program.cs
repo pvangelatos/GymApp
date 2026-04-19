@@ -49,7 +49,44 @@ namespace GymApp
             app.MapRazorPages()
                .WithStaticAssets();
 
+
+            // Αυτόματη απενεργοποίηση ληγμένων συνδρομών
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                // Απενεργοποίηση βάσει EndDate
+                var expiredSubscriptions = db.Subscriptions
+                    .Where(s => s.IsActive && s.EndDate < DateTime.Today)
+                    .ToList();
+
+                foreach (var sub in expiredSubscriptions)
+                    sub.IsActive = false;
+
+                if (expiredSubscriptions.Any())
+                    db.SaveChanges();
+
+                // Απενεργοποίηση βάσει εξαντλημένων συνεδριών
+                var exhaustedSubscriptions = db.Subscriptions
+                    .Include(s => s.SubscriptionPlan)
+                    .Include(s => s.Bookings)
+                    .Where(s => s.IsActive)
+                    .ToList()
+                    .Where(s => s.Bookings.Count(b =>
+                        b.Status == GymApp.Models.BookingStatus.Attended ||
+                        b.Status == GymApp.Models.BookingStatus.NoShow ||
+                        b.Status == GymApp.Models.BookingStatus.Booked) >= s.SubscriptionPlan.SessionsPerMonth)
+                    .ToList();
+
+                foreach (var sub in exhaustedSubscriptions)
+                    sub.IsActive = false;
+
+                if (exhaustedSubscriptions.Any())
+                    db.SaveChanges();
+            }
+
             app.Run();
+            
         }
     }
 }

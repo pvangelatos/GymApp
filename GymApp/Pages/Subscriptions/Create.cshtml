@@ -44,6 +44,16 @@
                 </select>
                 <span asp-validation-for="Subscription.SubscriptionPlanId" class="text-danger"></span>
             </div>
+            @if (Model.SessionTypeList != null)
+            {
+                <div class="mb-3">
+                    <label asp-for="Subscription.SessionType" class="form-label">Βήμα 3: Επιλέξτε Τμήμα</label>
+                    <select asp-for="Subscription.SessionType" asp-items="Model.SessionTypeList" class="form-select">
+                        <option value="">-- Επιλέξτε Τμήμα --</option>
+                    </select>
+                    <span asp-validation-for="Subscription.SessionType" class="text-danger"></span>
+                </div>
+            }
             <div class="mb-3">
                 <label asp-for="Subscription.StartDate" class="form-label">Ημερομηνία Έναρξης</label>
                 <input asp-for="Subscription.StartDate" type="date" class="form-control"
