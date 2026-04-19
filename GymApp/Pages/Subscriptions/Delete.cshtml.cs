@@ -36,12 +36,16 @@ namespace GymApp.Pages.Subscriptions
         {
             var subscription = await _context.Subscriptions
                 .Include(s => s.Bookings)
+                .Include(s => s.Payments) // ← πρόσθεσε αυτό
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (subscription != null)
             {
-                // Διαγραφή και των σχετικών Bookings
+                // Διαγραφή πληρωμών
+                _context.Payments.RemoveRange(subscription.Payments);
+                // Διαγραφή κρατήσεων
                 _context.Bookings.RemoveRange(subscription.Bookings);
+                // Διαγραφή συνδρομής
                 _context.Subscriptions.Remove(subscription);
                 await _context.SaveChangesAsync();
             }
