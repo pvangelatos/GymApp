@@ -1,0 +1,108 @@
+﻿@page "{memberId:int}"
+@model GymApp.Pages.Payments.MemberPaymentsModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>💳 Ιστορικό Πληρωμών — @Model.Member.Lastname @Model.Member.Firstname</h2>
+        <a asp-page="/Members/Index" class="btn btn-secondary">← Μέλη</a>
+    </div>
+
+    @* Σύνοψη *@
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary text-center">
+                <div class="card-body">
+                    <h6>Σύνολο Πληρωμών</h6>
+                    <h4>@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success text-center">
+                <div class="card-body">
+                    <h6>Με Απόδειξη</h6>
+                    <h4>@Model.TotalWithReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning text-center">
+                <div class="card-body">
+                    <h6>Χωρίς Απόδειξη</h6>
+                    <h4>@Model.TotalWithoutReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info text-center">
+                <div class="card-body">
+                    <h6>Αριθμός Πληρωμών</h6>
+                    <h4>@Model.Payments.Count</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Πίνακας *@
+    @if (!Model.Payments.Any())
+    {
+        <div class="alert alert-info">Δεν υπάρχουν πληρωμές για αυτό το μέλος.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ημερομηνία</th>
+                    <th>Πρόγραμμα</th>
+                    <th>Ποσό</th>
+                    <th>Τρόπος</th>
+                    <th>Απόδειξη</th>
+                    <th>Σημειώσεις</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var payment in Model.Payments)
+                {
+                    <tr>
+                        <td>@payment.PaymentDate.ToShortDateString()</td>
+                        <td>@payment.Subscription.SubscriptionPlan.GymProgram.Name</td>
+                        <td><strong>@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                        <td>
+                            @switch (payment.PaymentMethod)
+                            {
+                                case GymApp.Models.PaymentMethod.Cash:
+                                    <span class="badge bg-success">💵 Μετρητά</span>
+                                    break;
+                                case GymApp.Models.PaymentMethod.Card:
+                                    <span class="badge bg-primary">💳 Κάρτα</span>
+                                    break;
+                                case GymApp.Models.PaymentMethod.Transfer:
+                                    <span class="badge bg-info">🏦 Transfer</span>
+                                    break;
+                            }
+                        </td>
+                        <td>
+                            @if (payment.HasReceipt)
+                            {
+                                <span class="badge bg-success">✓ Ναι</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">✗ Όχι</span>
+                            }
+                        </td>
+                        <td>@payment.Notes</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="table-dark">
+                <tr>
+                    <td colspan="2"><strong>Σύνολο</strong></td>
+                    <td><strong>@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+</div>

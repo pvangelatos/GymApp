@@ -73,6 +73,7 @@
                         <a asp-page="Edit" asp-route-id="@member.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
                         <a asp-page="Details" asp-route-id="@member.Id" class="btn btn-sm btn-info">Λεπτομέρειες</a>
                         <a asp-page="/Subscriptions/Index" asp-route-memberId="@member.Id" class="btn btn-sm btn-success">Συνδρομές</a>
+                        <a asp-page="/Payments/MemberPayments" asp-route-memberId="@member.Id" class="btn btn-sm btn-dark">💳 Πληρωμές</a>
                         <a asp-page="Delete" asp-route-id="@member.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
                     </td>
                 </tr>
