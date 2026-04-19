@@ -7,6 +7,18 @@
         <a asp-page="Create" class="btn btn-primary">+ Νέο Μέλος</a>
     </div>
 
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="SearchTerm" value="@Model.SearchTerm"
+                   class="form-control" placeholder="Αναζήτηση με όνομα, επώνυμο ή τηλέφωνο..." />
+            <button type="submit" class="btn btn-outline-secondary">🔍 Αναζήτηση</button>
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+            {
+                <a asp-page="Index" class="btn btn-outline-danger">✕ Καθαρισμός</a>
+            }
+        </div>
+    </form>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -20,6 +32,12 @@
             </tr>
         </thead>
         <tbody>
+            @if (!Model.Members.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Δεν βρέθηκαν μέλη.</td>
+                </tr>
+            }
             @foreach (var member in Model.Members)
             {
                 <tr>
