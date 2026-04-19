@@ -44,6 +44,56 @@
         </div>
     </div>
 
+    @* Πίνακας διαθεσιμότητας Pilates Reformer *@
+    <div class="card mb-4">
+        <div class="card-header">
+            🏋️ Διαθεσιμότητα Pilates Reformer
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Τμήμα</th>
+                        <th>Συνολικές Θέσεις</th>
+                        <th>Δεσμευμένες</th>
+                        <th>Διαθέσιμες</th>
+                        <th>Συνδρομές x4</th>
+                        <th>Συνδρομές x8</th>
+                        <th>Συνδρομές x12</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>🌅 Πρωί</strong></td>
+                        <td>@Model.MorningCapacity.TotalSlots</td>
+                        <td>@Model.MorningCapacity.OccupiedSlots</td>
+                        <td>
+                            <span class="badge @(Model.MorningCapacity.AvailableSlots > 10 ? "bg-success" : Model.MorningCapacity.AvailableSlots > 0 ? "bg-warning" : "bg-danger")">
+                                @Model.MorningCapacity.AvailableSlots
+                            </span>
+                        </td>
+                        <td>@Model.MorningCapacity.AvailableFor4</td>
+                        <td>@Model.MorningCapacity.AvailableFor8</td>
+                        <td>@Model.MorningCapacity.AvailableFor12</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🌆 Απόγευμα</strong></td>
+                        <td>@Model.AfternoonCapacity.TotalSlots</td>
+                        <td>@Model.AfternoonCapacity.OccupiedSlots</td>
+                        <td>
+                            <span class="badge @(Model.AfternoonCapacity.AvailableSlots > 10 ? "bg-success" : Model.AfternoonCapacity.AvailableSlots > 0 ? "bg-warning" : "bg-danger")">
+                                @Model.AfternoonCapacity.AvailableSlots
+                            </span>
+                        </td>
+                        <td>@Model.AfternoonCapacity.AvailableFor4</td>
+                        <td>@Model.AfternoonCapacity.AvailableFor8</td>
+                        <td>@Model.AfternoonCapacity.AvailableFor12</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     @* Top προγράμματα *@
     <div class="row">
         <div class="col-md-6">

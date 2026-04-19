@@ -1,0 +1,79 @@
+﻿@page
+@model GymApp.Pages.Reports.WeeklyScheduleModel
+@{
+    string DayName(DayOfWeek day) => day switch
+    {
+        DayOfWeek.Monday => "Δευτέρα",
+        DayOfWeek.Tuesday => "Τρίτη",
+        DayOfWeek.Wednesday => "Τετάρτη",
+        DayOfWeek.Thursday => "Πέμπτη",
+        DayOfWeek.Friday => "Παρασκευή",
+        DayOfWeek.Saturday => "Σάββατο",
+        _ => day.ToString()
+    };
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>📅 Εβδομαδιαίο Πρόγραμμα</h2>
+        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
+    </div>
+
+    @* Πλοήγηση εβδομάδας *@
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"]) - 1 : -1)"
+           class="btn btn-outline-primary">← Προηγούμενη</a>
+        <h5 class="mb-0">
+            @Model.WeekStart.ToString("dd/MM/yyyy") — @Model.WeekEnd.ToString("dd/MM/yyyy")
+        </h5>
+        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"]) + 1 : 1)"
+           class="btn btn-outline-primary">Επόμενη →</a>
+        <a asp-page="WeeklySchedule" class="btn btn-outline-secondary">Τρέχουσα</a>
+    </div>
+
+    @* Εβδομαδιαίο grid *@
+    <div class="row g-2">
+        @foreach (var day in Model.Days)
+        {
+            var date = Model.WeekStart.AddDays(((int)day - (int)DayOfWeek.Monday + 7) % 7);
+            var isToday = date.Date == DateTime.Today;
+            var slots = Model.Schedule.ContainsKey(day) ? Model.Schedule[day] : new();
+
+            <div class="col">
+                <div class="card @(isToday ? "border-primary border-2" : "")">
+                    <div class="card-header text-center @(isToday ? "bg-primary text-white" : "bg-light")">
+                        <strong>@DayName(day)</strong>
+                        <br />
+                        <small>@date.ToString("dd/MM")</small>
+                    </div>
+                    <div class="card-body p-2">
+                        @if (!slots.Any())
+                        {
+                            <p class="text-muted text-center small">Δεν υπάρχουν μαθήματα</p>
+                        }
+                        @foreach (var slot in slots.OrderBy(s => s.TimeSlot.StartTime))
+                        {
+                            <div class="card mb-2 @(slot.IsFull ? "border-danger" : "border-success")" style="font-size: 0.85rem;">
+                                <div class="card-body p-2">
+                                    <div class="fw-bold">@slot.TimeSlot.GymProgram.Name</div>
+                                    <div class="text-muted">@slot.TimeSlot.StartTime.ToString("HH:mm")</div>
+                                    <div class="text-muted small">@slot.TimeSlot.GymProgram.Trainer.Firstname @slot.TimeSlot.GymProgram.Trainer.Lastname</div>
+                                    <div class="mt-1">
+                                        @if (slot.IsFull)
+                                        {
+                                            <span class="badge bg-danger">Πλήρες</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">@slot.AvailableCount/@slot.TimeSlot.Capacity</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
