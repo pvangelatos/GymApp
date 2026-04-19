@@ -89,7 +89,7 @@
     @if (Model.ExpiringSubscriptions > 0)
     {
         <div class="alert alert-warning mt-4">
-            <h5>⚠️ Ληγούσες Συνδρομές (επόμενες 7 μέρες)</h5>
+            <h5>⚠️ <a asp-page="/Reports/ExpiringSubscriptions" class="text-dark">Ληγούσες Συνδρομές (επόμενες 7 μέρες)</a></h5>
             <table class="table table-sm mb-0">
                 <thead>
                     <tr>

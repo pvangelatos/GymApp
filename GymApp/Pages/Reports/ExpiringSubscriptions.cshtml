@@ -1,0 +1,82 @@
+﻿@page
+@model GymApp.Pages.Reports.ExpiringSubscriptionsModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>⚠️ Ληγούσες Συνδρομές</h2>
+        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
+    </div>
+
+    @* Φίλτρο ημερών *@
+    <form method="get" class="mb-4">
+        <div class="input-group" style="max-width: 300px;">
+            <span class="input-group-text">Εμφάνιση για</span>
+            <select name="DaysAhead" class="form-select" onchange="this.form.submit()">
+                <option value="7" selected="@(Model.DaysAhead == 7)">7 μέρες</option>
+                <option value="14" selected="@(Model.DaysAhead == 14)">14 μέρες</option>
+                <option value="30" selected="@(Model.DaysAhead == 30)">30 μέρες</option>
+            </select>
+        </div>
+    </form>
+
+    @if (!Model.Subscriptions.Any())
+    {
+        <div class="alert alert-success">
+            ✅ Δεν υπάρχουν ληγούσες συνδρομές για τις επόμενες @Model.DaysAhead μέρες!
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            Βρέθηκαν <strong>@Model.Subscriptions.Count</strong> συνδρομές που λήγουν τις επόμενες @Model.DaysAhead μέρες.
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Μέλος</th>
+                    <th>Πρόγραμμα</th>
+                    <th>Πακέτο</th>
+                    <th>Τμήμα</th>
+                    <th>Λήξη</th>
+                    <th>Κατάσταση</th>
+                    <th>Ενέργειες</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sub in Model.Subscriptions)
+                {
+                    var daysLeft = (sub.EndDate - DateTime.Today).Days;
+                    <tr class="@(daysLeft == 0 ? "table-danger" : daysLeft <= 3 ? "table-warning" : "")">
+                        <td>@sub.Member.Lastname @sub.Member.Firstname</td>
+                        <td>@sub.SubscriptionPlan.GymProgram.Name</td>
+                        <td>@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
+                        <td>@(sub.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</td>
+                        <td>
+                            @if (daysLeft == 0)
+                            {
+                                <span class="badge bg-danger">Σήμερα!</span>
+                            }
+                            else if (daysLeft < 0)
+                            {
+                                <span class="badge bg-dark">Έληξε</span>
+                            }
+                            else
+                            {
+                                @sub.EndDate.ToShortDateString()
+                                <small class="text-muted">(σε @daysLeft μέρες)</small>
+                            }
+                        </td>
+                        <td><span class="badge bg-success">Ενεργή</span></td>
+                        <td>
+                            <a asp-page="/Subscriptions/Renew" asp-route-id="@sub.Id"
+                               class="btn btn-sm btn-success">Ανανέωση</a>
+                            <a asp-page="/Subscriptions/Index" asp-route-memberId="@sub.MemberId"
+                               class="btn btn-sm btn-info">Προβολή</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
