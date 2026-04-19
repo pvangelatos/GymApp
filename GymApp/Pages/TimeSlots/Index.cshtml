@@ -26,7 +26,7 @@
             @foreach (var slot in Model.MorningSlots)
             {
                 <tr>
-                    <td>@slot.DayOfWeek</td>
+                    <td>@DayName(slot.DayOfWeek)</td>
                     <td>@slot.StartTime.ToString("HH:mm")</td>
                     <td>@slot.Capacity</td>
                     <td>
@@ -56,7 +56,7 @@
             @foreach (var slot in Model.AfternoonSlots)
             {
                 <tr>
-                    <td>@slot.DayOfWeek</td>
+                    <td>@DayName(slot.DayOfWeek)</td>
                     <td>@slot.StartTime.ToString("HH:mm")</td>
                     <td>@slot.Capacity</td>
                     <td>
@@ -70,3 +70,16 @@
 
     <a asp-page="/GymPrograms/Index" class="btn btn-secondary mt-2">← Επιστροφή στα Προγράμματα</a>
 </div>
+@functions {
+    string DayName(DayOfWeek day) => day switch
+    {
+        DayOfWeek.Monday => "Δευτέρα",
+        DayOfWeek.Tuesday => "Τρίτη",
+        DayOfWeek.Wednesday => "Τετάρτη",
+        DayOfWeek.Thursday => "Πέμπτη",
+        DayOfWeek.Friday => "Παρασκευή",
+        DayOfWeek.Saturday => "Σάββατο",
+        DayOfWeek.Sunday => "Κυριακή",
+        _ => day.ToString()
+    };
+}
