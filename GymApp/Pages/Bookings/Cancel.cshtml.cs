@@ -66,9 +66,9 @@ namespace GymApp.Pages.Bookings
                 await _context.SaveChangesAsync();
             }
 
-            await CheckAndDeactivateSubscriptionAsync(booking.SubscriptionId);
+            await CheckAndDeactivateSubscriptionAsync(booking!.SubscriptionId);
 
-            return RedirectToPage("Index", new { subscriptionId = booking?.SubscriptionId });
+            return RedirectToPage("Index", new { subscriptionId = booking!.SubscriptionId });
         }
     }
 }

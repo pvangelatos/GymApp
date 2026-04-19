@@ -21,12 +21,12 @@
 
     @* Πλοήγηση εβδομάδας *@
     <div class="d-flex align-items-center gap-3 mb-4">
-        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"]) - 1 : -1)"
+        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"].ToString()) - 1 : -1)"
            class="btn btn-outline-primary">← Προηγούμενη</a>
         <h5 class="mb-0">
             @Model.WeekStart.ToString("dd/MM/yyyy") — @Model.WeekEnd.ToString("dd/MM/yyyy")
         </h5>
-        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"]) + 1 : 1)"
+        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"].ToString()) + 1 : 1)"
            class="btn btn-outline-primary">Επόμενη →</a>
         <a asp-page="WeeklySchedule" class="btn btn-outline-secondary">Τρέχουσα</a>
     </div>

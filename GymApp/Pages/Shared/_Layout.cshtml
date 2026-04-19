@@ -23,9 +23,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">
                                 🏠 Dashboard
-                                @if (ViewData["ExpiringCount"] != null && (int)ViewData["ExpiringCount"] > 0)
+                                @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
                                 {
-                                    <span class="badge bg-danger">@ViewData["ExpiringCount"]</span>
+                                    <span class="badge bg-danger">@(ViewData["ExpiringCount"] ?? 0)</span>
                                 }
                             </a>
                         </li>
