@@ -1,17 +1,31 @@
 ﻿@page "{memberId:int}"
 @model GymApp.Pages.Subscriptions.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-1">
-        <h2>Συνδρομές — @Model.Member.Firstname @Model.Member.Lastname</h2>
-        <a asp-page="Create" asp-route-memberId="@Model.Member.Id" class="btn btn-primary">+ Νέα Συνδρομή</a>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+            <i class="ti ti-arrow-left"></i>
+            <a asp-page="/Members/Index" style="color:var(--text-3);text-decoration:none">Μέλη</a>
+        </div>
+        <h1 style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:var(--accent);line-height:1">ΣΥΝΔΡΟΜΕΣ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+            <i class="ti ti-user" style="color:var(--accent)"></i>
+            <strong style="color:var(--text-2)">@Model.Member.Lastname @Model.Member.Firstname</strong>
+        </div>
     </div>
+    <a asp-page="Create" asp-route-memberId="@Model.Member.Id" class="btn btn-primary"
+           style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+        <i class="ti ti-plus"></i> ΝΕΑ ΣΥΝΔΡΟΜΗ
+    </a>
+</div>
 
-    <table class="table table-striped mt-3">
+<div class="card">
+    <table class="table mb-0">
         <thead>
             <tr>
                 <th>Πρόγραμμα</th>
                 <th>Πακέτο</th>
+                <th>Τμήμα</th>
                 <th>Έναρξη</th>
                 <th>Λήξη</th>
                 <th>Ποσό</th>
@@ -23,42 +37,106 @@
             @if (!Model.Subscriptions.Any())
             {
                 <tr>
-                    <td colspan="7" class="text-center text-muted">Δεν υπάρχουν συνδρομές.</td>
+                    <td colspan="8" class="text-center py-4" style="color:var(--text-3)">
+                        <i class="ti ti-id-badge-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        Δεν υπάρχουν συνδρομές.
+                    </td>
                 </tr>
             }
             @foreach (var sub in Model.Subscriptions)
             {
                 <tr>
-                    <td>@sub.SubscriptionPlan.GymProgram.Name</td>
-                    <td>@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
-                    <td>@sub.StartDate.ToShortDateString()</td>
-                    <td>@sub.EndDate.ToShortDateString()</td>
-                    <td>@sub.AmountPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
+                    <td style="white-space:nowrap">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <div style="width:28px;height:28px;border-radius:6px;background:var(--accent-md);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                <i class="ti ti-activity" style="color:var(--accent);font-size:.85rem"></i>
+                            </div>
+                            <span style="font-weight:600;color:var(--text-1);font-size:.85rem">@sub.SubscriptionPlan.GymProgram.Name</span>
+                        </div>
+                    </td>
+                    <td style="font-size:.82rem;font-family:var(--font-mono)">@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
                     <td>
-                        @if (sub.IsActive)
+                        @if (sub.SessionType == GymApp.Models.SessionType.Morning)
                         {
-                            <span class="badge bg-success">Ενεργή</span>
+                            <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--warm-lt);color:var(--warm);font-weight:600">
+                                <i class="ti ti-sun"></i> Πρωί
+                            </span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Ληγμένη</span>
+                            <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--accent-lt);color:var(--accent);font-weight:600">
+                                <i class="ti ti-moon"></i> Απόγευμα
+                            </span>
+                        }
+                    </td>
+                    <td style="font-size:.82rem;font-family:var(--font-mono);white-space:nowrap">@sub.StartDate.ToShortDateString()</td>
+                    <td style="font-size:.82rem;font-family:var(--font-mono);white-space:nowrap">@sub.EndDate.ToShortDateString()</td>
+                    <td style="font-size:.82rem;font-weight:600;color:var(--text-1);font-family:var(--font-mono)">@sub.AmountPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
+                    <td>
+                        @if (sub.IsActive)
+                        {
+                            <span class="badge bg-success" style="font-family:var(--font-mono);font-size:.65rem">
+                                <i class="ti ti-check"></i> Ενεργή
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary" style="font-family:var(--font-mono);font-size:.65rem">
+                                <i class="ti ti-x"></i> Ληγμένη
+                            </span>
                         }
                     </td>
                     <td>
-                        <a asp-page="/Bookings/Index" asp-route-subscriptionId="@sub.Id" class="btn btn-sm btn-info">Κρατήσεις</a>
-                        <a asp-page="Edit" asp-route-id="@sub.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
-                        <a asp-page="/Payments/Index" asp-route-subscriptionId="@sub.Id" class="btn btn-sm btn-dark">💳 Πληρωμές</a>
-                        <a asp-page="AttendanceCard" asp-route-id="@sub.Id" class="btn btn-sm btn-dark">🎴 Κάρτα</a>
-                        @if (!sub.IsActive)
-                        {
-                            <a asp-page="Renew" asp-route-id="@sub.Id" class="btn btn-sm btn-success">Ανανέωση</a>
-                        }
-                        <a asp-page="Delete" asp-route-id="@sub.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="ti ti-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu" style="background:var(--bg-3);border:1px solid var(--border)">
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Bookings/Index" asp-route-subscriptionId="@sub.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-calendar-check" style="color:var(--olive)"></i> Κρατήσεις
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="AttendanceCard" asp-route-id="@sub.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-id" style="color:var(--brown-mid)"></i> Κάρτα
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Payments/Index" asp-route-subscriptionId="@sub.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-credit-card" style="color:var(--accent)"></i> Πληρωμές
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="Edit" asp-route-id="@sub.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-edit" style="color:var(--warm)"></i> Επεξεργασία
+                                    </a>
+                                </li>
+                                @if (!sub.IsActive)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-page="Renew" asp-route-id="@sub.Id"
+                                               style="font-size:.82rem;color:var(--olive)">
+                                            <i class="ti ti-refresh" style="color:var(--olive)"></i> Ανανέωση
+                                        </a>
+                                    </li>
+                                }
+                                <li><hr class="dropdown-divider" style="border-color:var(--border)"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="Delete" asp-route-id="@sub.Id"
+                                           style="font-size:.82rem;color:var(--red)">
+                                        <i class="ti ti-trash"></i> Διαγραφή
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <a asp-page="/Members/Index" class="btn btn-secondary mt-2">← Επιστροφή στα Μέλη</a>
 </div>

@@ -1,16 +1,23 @@
 ﻿@page
 @model GymApp.Pages.GymPrograms.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Προγράμματα</h2>
-        <a asp-page="Create" class="btn btn-primary">+ Νέο Πρόγραμμα</a>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--accent);line-height:1">ΠΡΟΓΡΑΜΜΑΤΑ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+            Σύνολο: <strong style="color:var(--text-2)">@Model.GymPrograms.Count</strong> προγράμματα
+        </div>
     </div>
+    <a asp-page="Create" class="btn btn-primary" style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+        <i class="ti ti-plus"></i> ΝΕΟ ΠΡΟΓΡΑΜΜΑ
+    </a>
+</div>
 
-    <table class="table table-striped">
+<div class="card">
+    <table class="table mb-0">
         <thead>
             <tr>
-                <th>Όνομα</th>
+                <th>Πρόγραμμα</th>
                 <th>Περιγραφή</th>
                 <th>Πρόγραμμα</th>
                 <th>Εκπαιδευτής</th>
@@ -21,21 +28,66 @@
             @if (!Model.GymPrograms.Any())
             {
                 <tr>
-                    <td colspan="5" class="text-center text-muted">Δεν βρέθηκαν προγράμματα.</td>
+                    <td colspan="5" class="text-center py-4" style="color:var(--text-3)">
+                        <i class="ti ti-activity-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        Δεν βρέθηκαν προγράμματα.
+                    </td>
                 </tr>
             }
             @foreach (var program in Model.GymPrograms)
             {
                 <tr>
-                    <td>@program.Name</td>
-                    <td>@program.Description</td>
-                    <td>@program.Schedule</td>
-                    <td>@program.Trainer.Firstname @program.Trainer.Lastname</td>
+                    <td style="white-space:nowrap">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-md);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                <i class="ti ti-activity" style="color:var(--accent);font-size:1rem"></i>
+                            </div>
+                            <div style="font-weight:600;color:var(--text-1);font-size:.85rem">@program.Name</div>
+                        </div>
+                    </td>
+                    <td style="font-size:.82rem;color:var(--text-2);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@program.Description</td>
+                    <td style="font-size:.82rem;font-family:var(--font-mono)">@program.Schedule</td>
+                    <td style="white-space:nowrap">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <div style="width:28px;height:28px;border-radius:50%;background:var(--olive-lt);border:1.5px solid var(--olive);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:var(--olive);font-family:var(--font-mono)">
+                                @(program.Trainer.Lastname.Length > 0 ? program.Trainer.Lastname[0].ToString() : "")@(program.Trainer.Firstname.Length > 0 ? program.Trainer.Firstname[0].ToString() : "")
+                            </div>
+                            <span style="font-size:.82rem;color:var(--text-2)">@program.Trainer.Lastname @program.Trainer.Firstname</span>
+                        </div>
+                    </td>
                     <td>
-                        <a asp-page="/SubscriptionPlans/Index" asp-route-gymProgramId="@program.Id" class="btn btn-sm btn-info">Πακέτα</a>
-                        <a asp-page="/TimeSlots/Index" asp-route-gymProgramId="@program.Id" class="btn btn-sm btn-secondary">Πρόγραμμα</a>
-                        <a asp-page="Edit" asp-route-id="@program.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
-                        <a asp-page="Delete" asp-route-id="@program.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="ti ti-dots"></i> Ενέργειες
+                            </button>
+                            <ul class="dropdown-menu" style="background:var(--bg-3);border:1px solid var(--border)">
+                                <li>
+                                    <a class="dropdown-item" asp-page="Edit" asp-route-id="@program.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-edit" style="color:var(--warm)"></i> Επεξεργασία
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/SubscriptionPlans/Index" asp-route-gymProgramId="@program.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-packages" style="color:var(--accent)"></i> Πακέτα
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/TimeSlots/Index" asp-route-gymProgramId="@program.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-calendar-week" style="color:var(--olive)"></i> Πρόγραμμα
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" style="border-color:var(--border)"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="Delete" asp-route-id="@program.Id"
+                                           style="font-size:.82rem;color:var(--red)">
+                                        <i class="ti ti-trash"></i> Διαγραφή
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             }
