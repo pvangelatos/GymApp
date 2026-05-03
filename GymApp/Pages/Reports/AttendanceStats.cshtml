@@ -1,125 +1,147 @@
 ﻿@page
 @model GymApp.Pages.Reports.AttendanceStatsModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📈 Στατιστικά Παρουσιών</h2>
-        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
-    </div>
+<div class="mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--accent);line-height:1">ΣΤΑΤΙΣΤΙΚΑ</h1>
+    <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">Στατιστικά παρουσιών ανά μέλος και πρόγραμμα</div>
+</div>
 
-    @* Συνολικά στατιστικά *@
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary text-center">
-                <div class="card-body">
-                    <h6>Σύνολο Κρατήσεων</h6>
-                    <h3>@Model.TotalBookings</h3>
+@* Κάρτες *@
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--accent) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Σύνολο Κρατήσεων</span>
+                    <i class="ti ti-calendar" style="color:var(--accent);font-size:1rem"></i>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success text-center">
-                <div class="card-body">
-                    <h6>Παρουσίες</h6>
-                    <h3>@Model.TotalAttended</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-danger text-center">
-                <div class="card-body">
-                    <h6>No Show</h6>
-                    <h3>@Model.TotalNoShow</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-secondary text-center">
-                <div class="card-body">
-                    <h6>Ακυρώσεις</h6>
-                    <h3>@Model.TotalCancelled</h3>
-                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalBookings</div>
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--olive) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Παρουσίες</span>
+                    <i class="ti ti-check" style="color:var(--olive);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalAttended</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--red) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">No Show</span>
+                    <i class="ti ti-user-x" style="color:var(--red);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalNoShow</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--text-3) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Ακυρώσεις</span>
+                    <i class="ti ti-ban" style="color:var(--text-3);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalCancelled</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    @* Στατιστικά ανά μέλος *@
-    <h5 class="mb-3">👤 Ανά Μέλος</h5>
-    <table class="table table-striped mb-4">
-        <thead>
-            <tr>
-                <th>Μέλος</th>
-                <th>Κρατήσεις</th>
-                <th>Παρουσίες</th>
-                <th>No Show</th>
-                <th>Ακυρώσεις</th>
-                <th>Ποσοστό Παρουσίας</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!Model.MemberStatsList.Any())
-            {
-                <tr><td colspan="6" class="text-center text-muted">Δεν υπάρχουν δεδομένα.</td></tr>
-            }
-            @foreach (var member in Model.MemberStatsList)
-            {
-                <tr>
-                    <td>@member.MemberName</td>
-                    <td>@member.TotalBookings</td>
-                    <td><span class="badge bg-success">@member.Attended</span></td>
-                    <td><span class="badge bg-danger">@member.NoShow</span></td>
-                    <td><span class="badge bg-secondary">@member.Cancelled</span></td>
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="progress flex-grow-1" style="height: 8px;">
-                                <div class="progress-bar bg-success"
-                                     style="width: @member.AttendanceRate%"></div>
-                            </div>
-                            <small>@member.AttendanceRate%</small>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="row g-4">
+    @* Ανά Μέλος *@
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header" style="display:flex;align-items:center;gap:8px">
+                <i class="ti ti-users" style="color:var(--olive)"></i> ΑΝΑ ΜΕΛΟΣ
+            </div>
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Μέλος</th>
+                        <th>Παρουσίες</th>
+                        <th>No Show</th>
+                        <th>Ποσοστό</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.MemberStatsList.Any())
+                    {
+                        <tr><td colspan="4" class="text-center py-3" style="color:var(--text-3)">Δεν υπάρχουν δεδομένα.</td></tr>
+                    }
+                    @foreach (var member in Model.MemberStatsList)
+                    {
+                        <tr>
+                            <td style="font-weight:600;font-size:.82rem;color:var(--text-1)">@member.MemberName</td>
+                            <td>
+                                <span style="font-size:.75rem;padding:2px 7px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">@member.Attended</span>
+                            </td>
+                            <td>
+                                <span style="font-size:.75rem;padding:2px 7px;border-radius:4px;background:var(--red-lt);color:var(--red);font-weight:600">@member.NoShow</span>
+                            </td>
+                            <td style="min-width:100px">
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <div style="flex:1;height:5px;background:var(--bg-4);border-radius:3px;overflow:hidden">
+                                        <div style="width:@member.AttendanceRate%;height:100%;background:var(--olive);border-radius:3px"></div>
+                                    </div>
+                                    <span style="font-size:.68rem;font-family:var(--font-mono);color:var(--text-3)">@member.AttendanceRate%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    @* Στατιστικά ανά πρόγραμμα *@
-    <h5 class="mb-3">🏋️ Ανά Πρόγραμμα</h5>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Πρόγραμμα</th>
-                <th>Κρατήσεις</th>
-                <th>Παρουσίες</th>
-                <th>No Show</th>
-                <th>Ακυρώσεις</th>
-                <th>Ποσοστό Παρουσίας</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!Model.ProgramStatsList.Any())
-            {
-                <tr><td colspan="6" class="text-center text-muted">Δεν υπάρχουν δεδομένα.</td></tr>
-            }
-            @foreach (var program in Model.ProgramStatsList)
-            {
-                <tr>
-                    <td>@program.ProgramName</td>
-                    <td>@program.TotalBookings</td>
-                    <td><span class="badge bg-success">@program.Attended</span></td>
-                    <td><span class="badge bg-danger">@program.NoShow</span></td>
-                    <td><span class="badge bg-secondary">@program.Cancelled</span></td>
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="progress flex-grow-1" style="height: 8px;">
-                                <div class="progress-bar bg-success"
-                                     style="width: @program.AttendanceRate%"></div>
-                            </div>
-                            <small>@program.AttendanceRate%</small>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @* Ανά Πρόγραμμα *@
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header" style="display:flex;align-items:center;gap:8px">
+                <i class="ti ti-activity" style="color:var(--accent)"></i> ΑΝΑ ΠΡΟΓΡΑΜΜΑ
+            </div>
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Πρόγραμμα</th>
+                        <th>Παρουσίες</th>
+                        <th>No Show</th>
+                        <th>Ποσοστό</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.ProgramStatsList.Any())
+                    {
+                        <tr><td colspan="4" class="text-center py-3" style="color:var(--text-3)">Δεν υπάρχουν δεδομένα.</td></tr>
+                    }
+                    @foreach (var program in Model.ProgramStatsList)
+                    {
+                        <tr>
+                            <td style="font-weight:600;font-size:.82rem;color:var(--text-1)">@program.ProgramName</td>
+                            <td>
+                                <span style="font-size:.75rem;padding:2px 7px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">@program.Attended</span>
+                            </td>
+                            <td>
+                                <span style="font-size:.75rem;padding:2px 7px;border-radius:4px;background:var(--red-lt);color:var(--red);font-weight:600">@program.NoShow</span>
+                            </td>
+                            <td style="min-width:100px">
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <div style="flex:1;height:5px;background:var(--bg-4);border-radius:3px;overflow:hidden">
+                                        <div style="width:@program.AttendanceRate%;height:100%;background:var(--accent);border-radius:3px"></div>
+                                    </div>
+                                    <span style="font-size:.68rem;font-family:var(--font-mono);color:var(--text-3)">@program.AttendanceRate%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

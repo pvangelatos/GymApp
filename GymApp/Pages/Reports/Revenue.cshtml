@@ -1,53 +1,67 @@
 ﻿@page
 @model GymApp.Pages.Reports.RevenueModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>💰 Αναφορά Εσόδων</h2>
-        <div>
-            <a asp-page="/Reports/Revenue" asp-page-handler="Export" class="btn btn-success">
-                📥 Εξαγωγή Excel
-            </a>
-            <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
-        </div>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--accent);line-height:1">ΕΣΟΔΑ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">Αναφορά εσόδων ανά μήνα</div>
     </div>
+    <a asp-page="/Reports/Revenue" asp-page-handler="Export" class="btn btn-success"
+           style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+        <i class="ti ti-file-spreadsheet"></i> ΕΞΑΓΩΓΗ EXCEL
+    </a>
+</div>
 
-    @* Σύνολα *@
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-success">
-                <div class="card-body text-center">
-                    <h6>Συνολικά Έσοδα</h6>
-                    <h3>@Model.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h3>
+@* Κάρτες *@
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card" style="border-top:3px solid var(--olive) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Συνολικά Έσοδα</span>
+                    <i class="ti ti-cash" style="color:var(--olive);font-size:1rem"></i>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-primary">
-                <div class="card-body text-center">
-                    <h6>Μέσος Μηνιαίος Τζίρος</h6>
-                    <h3>@Model.AverageMonthlyRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info">
-                <div class="card-body text-center">
-                    <h6>Μήνες Δραστηριότητας</h6>
-                    <h3>@Model.MonthlyData.Count</h3>
-                </div>
+                <div style="font-family:var(--font-display);font-size:1.8rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
             </div>
         </div>
     </div>
+    <div class="col-md-4">
+        <div class="card" style="border-top:3px solid var(--accent) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Μέσος Μηνιαίος Τζίρος</span>
+                    <i class="ti ti-chart-bar" style="color:var(--accent);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.8rem;letter-spacing:2px;color:var(--text-1)">@Model.AverageMonthlyRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card" style="border-top:3px solid var(--brown-mid) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Μήνες Δραστηριότητας</span>
+                    <i class="ti ti-calendar-stats" style="color:var(--brown-mid);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.8rem;letter-spacing:2px;color:var(--text-1)">@Model.MonthlyData.Count</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    @* Πίνακας ανά μήνα *@
-    @if (!Model.MonthlyData.Any())
-    {
-        <div class="alert alert-info">Δεν υπάρχουν δεδομένα εσόδων.</div>
-    }
-    else
-    {
-        <table class="table table-striped">
+@if (!Model.MonthlyData.Any())
+{
+    <div class="card">
+        <div class="card-body text-center py-4" style="color:var(--text-3)">
+            <i class="ti ti-chart-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+            Δεν υπάρχουν δεδομένα εσόδων.
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <table class="table mb-0">
             <thead>
                 <tr>
                     <th>Μήνας</th>
@@ -63,29 +77,28 @@
                         ? (month.Revenue / Model.TotalRevenue * 100)
                         : 0;
                     <tr>
-                        <td>@month.MonthName</td>
-                        <td>@month.SubscriptionCount</td>
-                        <td><strong>@month.Revenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="progress flex-grow-1" style="height: 8px;">
-                                    <div class="progress-bar bg-success"
-                                         style="width: @percentage.ToString("F0")%"></div>
+                        <td style="font-weight:600;color:var(--text-1);font-size:.85rem">@month.MonthName</td>
+                        <td style="font-size:.82rem;font-family:var(--font-mono)">@month.SubscriptionCount</td>
+                        <td style="font-size:.85rem;font-weight:700;color:var(--text-1);font-family:var(--font-mono)">@month.Revenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
+                        <td style="min-width:200px">
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <div style="flex:1;height:6px;background:var(--bg-4);border-radius:3px;overflow:hidden">
+                                    <div style="width:@percentage.ToString("F0")%;height:100%;background:var(--accent);border-radius:3px"></div>
                                 </div>
-                                <small>@percentage.ToString("F1")%</small>
+                                <span style="font-size:.72rem;font-family:var(--font-mono);color:var(--text-3);width:40px;text-align:right">@percentage.ToString("F1")%</span>
                             </div>
                         </td>
                     </tr>
                 }
             </tbody>
-            <tfoot class="table-dark">
-                <tr>
-                    <td><strong>Σύνολο</strong></td>
-                    <td><strong>@Model.MonthlyData.Sum(m => m.SubscriptionCount)</strong></td>
-                    <td><strong>@Model.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+            <tfoot>
+                <tr style="background:var(--bg-4)">
+                    <td style="font-weight:700;color:var(--text-1)">Σύνολο</td>
+                    <td style="font-weight:700;font-family:var(--font-mono)">@Model.MonthlyData.Sum(m => m.SubscriptionCount)</td>
+                    <td style="font-weight:700;font-family:var(--font-mono);color:var(--accent)">@Model.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
                     <td></td>
                 </tr>
             </tfoot>
         </table>
-    }
-</div>
+    </div>
+}

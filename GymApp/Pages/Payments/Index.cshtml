@@ -1,61 +1,87 @@
 ﻿@page "{subscriptionId:int}"
 @model GymApp.Pages.Payments.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-1">
-        <h2>💳 Πληρωμές — @Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</h2>
-        <a asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id" class="btn btn-primary">+ Νέα Πληρωμή</a>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+            <i class="ti ti-arrow-left"></i>
+            <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" style="color:var(--text-3);text-decoration:none">Συνδρομές</a>
+        </div>
+        <h1 style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:var(--accent);line-height:1">ΠΛΗΡΩΜΕΣ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+            <i class="ti ti-user" style="color:var(--accent)"></i>
+            <strong style="color:var(--text-2)">@Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</strong>
+            &nbsp;·&nbsp;
+            <span>@Model.Subscription.SubscriptionPlan.GymProgram.Name</span>
+        </div>
     </div>
-    <p class="text-muted mb-3">
-        @Model.Subscription.SubscriptionPlan.GymProgram.Name —
-        @Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες —
-        @(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")
-    </p>
+    <a asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id" class="btn btn-primary"
+           style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+        <i class="ti ti-plus"></i> ΝΕΑ ΠΛΗΡΩΜΗ
+    </a>
+</div>
 
-    @* Σύνοψη *@
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary text-center">
-                <div class="card-body">
-                    <h6>Αξία Συνδρομής</h6>
-                    <h4>@Model.Subscription.AmountPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+@* Κάρτες *@
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--accent) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Αξία Συνδρομής</span>
+                    <i class="ti ti-tag" style="color:var(--accent);font-size:1rem"></i>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success text-center">
-                <div class="card-body">
-                    <h6>Καταβλήθηκε</h6>
-                    <h4>@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning text-center">
-                <div class="card-body">
-                    <h6>Υπόλοιπο</h6>
-                    <h4>@((Model.Subscription.AmountPaid - Model.TotalPaid).ToString("C", new System.Globalization.CultureInfo("el-GR")))</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info text-center">
-                <div class="card-body">
-                    <h6>Με Απόδειξη</h6>
-                    <h4>@Model.TotalWithReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
-                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.Subscription.AmountPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--olive) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Καταβλήθηκε</span>
+                    <i class="ti ti-check" style="color:var(--olive);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--warm) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Υπόλοιπο</span>
+                    <i class="ti ti-clock" style="color:var(--warm);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@((Model.Subscription.AmountPaid - Model.TotalPaid).ToString("C", new System.Globalization.CultureInfo("el-GR")))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--brown-mid) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Με Απόδειξη</span>
+                    <i class="ti ti-receipt" style="color:var(--brown-mid);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalWithReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    @* Πίνακας πληρωμών *@
-    @if (!Model.Payments.Any())
-    {
-        <div class="alert alert-info">Δεν υπάρχουν πληρωμές για αυτή τη συνδρομή.</div>
-    }
-    else
-    {
-        <table class="table table-striped">
+@if (!Model.Payments.Any())
+{
+    <div class="card">
+        <div class="card-body text-center py-4" style="color:var(--text-3)">
+            <i class="ti ti-receipt-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+            Δεν υπάρχουν πληρωμές για αυτή τη συνδρομή.
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <table class="table mb-0">
             <thead>
                 <tr>
                     <th>Ημερομηνία</th>
@@ -70,41 +96,51 @@
                 @foreach (var payment in Model.Payments)
                 {
                     <tr>
-                        <td>@payment.PaymentDate.ToShortDateString()</td>
-                        <td><strong>@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                        <td style="font-size:.82rem;font-family:var(--font-mono);white-space:nowrap">@payment.PaymentDate.ToShortDateString()</td>
+                        <td style="font-size:.85rem;font-weight:600;color:var(--text-1);font-family:var(--font-mono)">@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
                         <td>
                             @switch (payment.PaymentMethod)
                             {
                                 case GymApp.Models.PaymentMethod.Cash:
-                                    <span class="badge bg-success">💵 Μετρητά</span>
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">
+                                        <i class="ti ti-cash"></i> Μετρητά
+                                    </span>
                                     break;
                                 case GymApp.Models.PaymentMethod.Card:
-                                    <span class="badge bg-primary">💳 Κάρτα</span>
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--accent-lt);color:var(--accent);font-weight:600">
+                                        <i class="ti ti-credit-card"></i> Κάρτα
+                                    </span>
                                     break;
                                 case GymApp.Models.PaymentMethod.Transfer:
-                                    <span class="badge bg-info">🏦 Transfer</span>
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--warm-lt);color:var(--warm);font-weight:600">
+                                        <i class="ti ti-building-bank"></i> Transfer
+                                    </span>
                                     break;
                             }
                         </td>
                         <td>
                             @if (payment.HasReceipt)
                             {
-                                <span class="badge bg-success">✓ Ναι</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">
+                                    <i class="ti ti-check"></i> Ναι
+                                </span>
                             }
                             else
                             {
-                                <span class="badge bg-secondary">✗ Όχι</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--bg-4);color:var(--text-3);font-weight:600">
+                                    <i class="ti ti-x"></i> Όχι
+                                </span>
                             }
                         </td>
-                        <td>@payment.Notes</td>
+                        <td style="font-size:.82rem;color:var(--text-2)">@payment.Notes</td>
                         <td>
-                            <a asp-page="Delete" asp-route-id="@payment.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                            <a asp-page="Delete" asp-route-id="@payment.Id" class="btn btn-sm btn-danger">
+                                <i class="ti ti-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    }
-
-    <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary mt-2">← Επιστροφή</a>
-</div>
+    </div>
+}

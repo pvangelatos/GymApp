@@ -1,56 +1,66 @@
 ﻿@page "{memberId:int}"
 @model GymApp.Pages.Payments.MemberPaymentsModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>💳 Ιστορικό Πληρωμών — @Model.Member.Lastname @Model.Member.Firstname</h2>
-        <a asp-page="/Members/Index" class="btn btn-secondary">← Μέλη</a>
-    </div>
-
-    @* Σύνοψη *@
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary text-center">
-                <div class="card-body">
-                    <h6>Σύνολο Πληρωμών</h6>
-                    <h4>@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--accent) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Σύνολο Πληρωμών</span>
+                    <i class="ti ti-cash" style="color:var(--accent);font-size:1rem"></i>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success text-center">
-                <div class="card-body">
-                    <h6>Με Απόδειξη</h6>
-                    <h4>@Model.TotalWithReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning text-center">
-                <div class="card-body">
-                    <h6>Χωρίς Απόδειξη</h6>
-                    <h4>@Model.TotalWithoutReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info text-center">
-                <div class="card-body">
-                    <h6>Αριθμός Πληρωμών</h6>
-                    <h4>@Model.Payments.Count</h4>
-                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--olive) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Με Απόδειξη</span>
+                    <i class="ti ti-receipt" style="color:var(--olive);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalWithReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--warm) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Χωρίς Απόδειξη</span>
+                    <i class="ti ti-receipt-off" style="color:var(--warm);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalWithoutReceipt.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--brown-mid) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Αριθμός Πληρωμών</span>
+                    <i class="ti ti-hash" style="color:var(--brown-mid);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:2px;color:var(--text-1)">@Model.Payments.Count</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    @* Πίνακας *@
-    @if (!Model.Payments.Any())
-    {
-        <div class="alert alert-info">Δεν υπάρχουν πληρωμές για αυτό το μέλος.</div>
-    }
-    else
-    {
-        <table class="table table-striped">
+@if (!Model.Payments.Any())
+{
+    <div class="card">
+        <div class="card-body text-center py-4" style="color:var(--text-3)">
+            <i class="ti ti-receipt-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+            Δεν υπάρχουν πληρωμές για αυτό το μέλος.
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <table class="table mb-0">
             <thead>
                 <tr>
                     <th>Ημερομηνία</th>
@@ -65,44 +75,52 @@
                 @foreach (var payment in Model.Payments)
                 {
                     <tr>
-                        <td>@payment.PaymentDate.ToShortDateString()</td>
-                        <td>@payment.Subscription.SubscriptionPlan.GymProgram.Name</td>
-                        <td><strong>@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                        <td style="font-size:.82rem;font-family:var(--font-mono);white-space:nowrap">@payment.PaymentDate.ToShortDateString()</td>
+                        <td style="font-size:.82rem">@payment.Subscription.SubscriptionPlan.GymProgram.Name</td>
+                        <td style="font-size:.85rem;font-weight:600;color:var(--text-1);font-family:var(--font-mono)">@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
                         <td>
                             @switch (payment.PaymentMethod)
                             {
                                 case GymApp.Models.PaymentMethod.Cash:
-                                    <span class="badge bg-success">💵 Μετρητά</span>
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">
+                                        <i class="ti ti-cash"></i> Μετρητά
+                                    </span>
                                     break;
                                 case GymApp.Models.PaymentMethod.Card:
-                                    <span class="badge bg-primary">💳 Κάρτα</span>
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--accent-lt);color:var(--accent);font-weight:600">
+                                        <i class="ti ti-credit-card"></i> Κάρτα
+                                    </span>
                                     break;
                                 case GymApp.Models.PaymentMethod.Transfer:
-                                    <span class="badge bg-info">🏦 Transfer</span>
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--warm-lt);color:var(--warm);font-weight:600">
+                                        <i class="ti ti-building-bank"></i> Transfer
+                                    </span>
                                     break;
                             }
                         </td>
                         <td>
                             @if (payment.HasReceipt)
                             {
-                                <span class="badge bg-success">✓ Ναι</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">
+                                    <i class="ti ti-check"></i> Ναι
+                                </span>
                             }
                             else
                             {
-                                <span class="badge bg-secondary">✗ Όχι</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--bg-4);color:var(--text-3);font-weight:600">
+                                    <i class="ti ti-x"></i> Όχι
+                                </span>
                             }
                         </td>
-                        <td>@payment.Notes</td>
+                        <td style="font-size:.82rem;color:var(--text-2)">@payment.Notes</td>
                     </tr>
                 }
-            </tbody>
-            <tfoot class="table-dark">
-                <tr>
+                <tr style="background:var(--bg-4)">
                     <td colspan="2"><strong>Σύνολο</strong></td>
-                    <td><strong>@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</strong></td>
+                    <td style="font-weight:700;font-family:var(--font-mono)">@Model.TotalPaid.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
                     <td colspan="3"></td>
                 </tr>
-            </tfoot>
+            </tbody>
         </table>
-    }
-</div>
+    </div>
+}

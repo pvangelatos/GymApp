@@ -1,37 +1,42 @@
 ﻿@page
 @model GymApp.Pages.Reports.ExpiringSubscriptionsModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>⚠️ Ληγούσες Συνδρομές</h2>
-        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--red);line-height:1">ΛΗΓΟΥΣΕΣ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">Συνδρομές που λήγουν σύντομα</div>
     </div>
-
-    @* Φίλτρο ημερών *@
-    <form method="get" class="mb-4">
-        <div class="input-group" style="max-width: 300px;">
-            <span class="input-group-text">Εμφάνιση για</span>
-            <select name="DaysAhead" class="form-select" onchange="this.form.submit()">
+    <form method="get">
+        <div class="input-group">
+            <span class="input-group-text"><i class="ti ti-calendar"></i></span>
+            <select name="DaysAhead" class="form-select" onchange="this.form.submit()" style="width:140px">
                 <option value="7" selected="@(Model.DaysAhead == 7)">7 μέρες</option>
                 <option value="14" selected="@(Model.DaysAhead == 14)">14 μέρες</option>
                 <option value="30" selected="@(Model.DaysAhead == 30)">30 μέρες</option>
             </select>
         </div>
     </form>
+</div>
 
-    @if (!Model.Subscriptions.Any())
-    {
-        <div class="alert alert-success">
-            ✅ Δεν υπάρχουν ληγούσες συνδρομές για τις επόμενες @Model.DaysAhead μέρες!
+@if (!Model.Subscriptions.Any())
+{
+    <div class="card">
+        <div class="card-body text-center py-5" style="color:var(--text-3)">
+            <i class="ti ti-circle-check" style="font-size:3rem;display:block;margin-bottom:12px;color:var(--olive)"></i>
+            <div style="font-family:var(--font-display);font-size:1.5rem;letter-spacing:2px;color:var(--olive)">ΟΛΑ ΚΑΛΑ!</div>
+            <div style="margin-top:8px">Δεν υπάρχουν ληγούσες συνδρομές για τις επόμενες @Model.DaysAhead μέρες.</div>
         </div>
-    }
-    else
-    {
-        <div class="alert alert-warning">
-            Βρέθηκαν <strong>@Model.Subscriptions.Count</strong> συνδρομές που λήγουν τις επόμενες @Model.DaysAhead μέρες.
-        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mb-3">
+        <i class="ti ti-alert-triangle"></i>
+        Βρέθηκαν <strong>@Model.Subscriptions.Count</strong> συνδρομές που λήγουν τις επόμενες @Model.DaysAhead μέρες.
+    </div>
 
-        <table class="table table-striped">
+    <div class="card">
+        <table class="table mb-0">
             <thead>
                 <tr>
                     <th>Μέλος</th>
@@ -47,36 +52,55 @@
                 @foreach (var sub in Model.Subscriptions)
                 {
                     var daysLeft = (sub.EndDate - DateTime.Today).Days;
-                    <tr class="@(daysLeft == 0 ? "table-danger" : daysLeft <= 3 ? "table-warning" : "")">
-                        <td>@sub.Member.Lastname @sub.Member.Firstname</td>
-                        <td>@sub.SubscriptionPlan.GymProgram.Name</td>
-                        <td>@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
-                        <td>@(sub.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</td>
+                    <tr>
+                        <td style="white-space:nowrap">
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <div style="width:28px;height:28px;border-radius:50%;background:var(--accent-md);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:var(--accent);font-family:var(--font-mono)">
+                                    @(sub.Member.Lastname.Length > 0 ? sub.Member.Lastname[0].ToString() : "")@(sub.Member.Firstname.Length > 0 ? sub.Member.Firstname[0].ToString() : "")
+                                </div>
+                                <span style="font-weight:600;font-size:.85rem;color:var(--text-1)">@sub.Member.Lastname @sub.Member.Firstname</span>
+                            </div>
+                        </td>
+                        <td style="font-size:.82rem">@sub.SubscriptionPlan.GymProgram.Name</td>
+                        <td style="font-size:.82rem;font-family:var(--font-mono)">@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
                         <td>
-                            @if (daysLeft == 0)
+                            @if (sub.SessionType == GymApp.Models.SessionType.Morning)
                             {
-                                <span class="badge bg-danger">Σήμερα!</span>
-                            }
-                            else if (daysLeft < 0)
-                            {
-                                <span class="badge bg-dark">Έληξε</span>
+                                <span style="font-size:.72rem;padding:2px 7px;border-radius:4px;background:var(--warm-lt);color:var(--warm);font-weight:600">
+                                    <i class="ti ti-sun"></i> Πρωί
+                                </span>
                             }
                             else
                             {
-                                @sub.EndDate.ToShortDateString()
-                                <small class="text-muted">(σε @daysLeft μέρες)</small>
+                                <span style="font-size:.72rem;padding:2px 7px;border-radius:4px;background:var(--accent-lt);color:var(--accent);font-weight:600">
+                                    <i class="ti ti-moon"></i> Απόγευμα
+                                </span>
                             }
                         </td>
-                        <td><span class="badge bg-success">Ενεργή</span></td>
+                        <td style="white-space:nowrap">
+                            @if (daysLeft == 0)
+                            {
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--red-lt);color:var(--red);font-weight:700">
+                                    <i class="ti ti-alert-circle"></i> Σήμερα!
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="font-size:.82rem;font-family:var(--font-mono);color:@(daysLeft <= 3 ? "var(--red)" : daysLeft <= 7 ? "var(--warm)" : "var(--text-2)")">
+                                    @sub.EndDate.ToShortDateString()
+                                </span>
+                                <span style="font-size:.7rem;color:var(--text-3);margin-left:4px">(σε @daysLeft μέρες)</span>
+                            }
+                        </td>
+                        <td><span class="badge bg-success" style="font-size:.65rem"><i class="ti ti-check"></i> Ενεργή</span></td>
                         <td>
-                            <a asp-page="/Subscriptions/Renew" asp-route-id="@sub.Id"
-                               class="btn btn-sm btn-success">Ανανέωση</a>
-                            <a asp-page="/Subscriptions/Index" asp-route-memberId="@sub.MemberId"
-                               class="btn btn-sm btn-info">Προβολή</a>
+                            <a asp-page="/Subscriptions/Renew" asp-route-id="@sub.Id" class="btn btn-sm btn-success">
+                                <i class="ti ti-refresh"></i> Ανανέωση
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    }
-</div>
+    </div>
+}

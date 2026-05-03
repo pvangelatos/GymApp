@@ -1,59 +1,95 @@
 ﻿@page "{subscriptionId:int}"
 @model GymApp.Pages.Bookings.IndexModel
 
-<div class="container mt-4">
-    <h2>Κρατήσεις — @Model.Subscription.Member.Firstname @Model.Subscription.Member.Lastname</h2>
-    <p class="text-muted">
-        Πρόγραμμα: <strong>@Model.Subscription.SubscriptionPlan.GymProgram.Name</strong> |
-        Τμήμα: <strong>@(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</strong> |
-        Πακέτο: <strong>@Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες</strong>
-    </p>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+            <i class="ti ti-arrow-left"></i>
+            <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" style="color:var(--text-3);text-decoration:none">Συνδρομές</a>
+        </div>
+        <h1 style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:var(--accent);line-height:1">ΚΡΑΤΗΣΕΙΣ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+            <i class="ti ti-user" style="color:var(--accent)"></i>
+            <strong style="color:var(--text-2)">@Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</strong>
+            &nbsp;·&nbsp;
+            <span>@Model.Subscription.SubscriptionPlan.GymProgram.Name</span>
+            &nbsp;·&nbsp;
+            @if (Model.Subscription.SessionType == GymApp.Models.SessionType.Morning)
+            {
+                <span><i class="ti ti-sun" style="color:var(--warm)"></i> Πρωί</span>
+            }
+            else
+            {
+                <span><i class="ti ti-moon" style="color:var(--accent)"></i> Απόγευμα</span>
+            }
+        </div>
+    </div>
+    @if (Model.RemainingSessions > 0 && Model.Subscription.IsActive)
+    {
+        <a asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id" class="btn btn-primary"
+               style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+            <i class="ti ti-plus"></i> ΝΕΑ ΚΡΑΤΗΣΗ
+        </a>
+    }
+</div>
 
-    <div class="row mb-3">
-        <div class="col-md-3">
-            <div class="card text-center border-success">
-                <div class="card-body">
-                    <h5 class="text-success">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.Attended)</h5>
-                    <p class="mb-0">Παρουσίες</p>
+@* Κάρτες στατιστικών *@
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--olive) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Παρουσίες</span>
+                    <i class="ti ti-check" style="color:var(--olive);font-size:1rem"></i>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center border-primary">
-                <div class="card-body">
-                    <h5 class="text-primary">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.Booked)</h5>
-                    <p class="mb-0">Κρατήσεις</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center border-warning">
-                <div class="card-body">
-                    <h5 class="text-warning">@Model.RemainingSessions</h5>
-                    <p class="mb-0">Εναπομείνασες</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center border-danger">
-                <div class="card-body">
-                    <h5 class="text-danger">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.NoShow)</h5>
-                    <p class="mb-0">No Show</p>
-                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.Attended)</div>
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--accent) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Κρατήσεις</span>
+                    <i class="ti ti-calendar" style="color:var(--accent);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.Booked)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--warm) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Εναπομείνασες</span>
+                    <i class="ti ti-hourglass" style="color:var(--warm);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.RemainingSessions</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card" style="border-top:3px solid var(--red) !important">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">No Show</span>
+                    <i class="ti ti-user-x" style="color:var(--red);font-size:1rem"></i>
+                </div>
+                <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:2px;color:var(--text-1)">@Model.Bookings.Count(b => b.Status == GymApp.Models.BookingStatus.NoShow)</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    @if (Model.RemainingSessions > 0 && Model.Subscription.IsActive)
-    {
-        <a asp-page="Create" asp-route-subscriptionId="@Model.Subscription.Id" class="btn btn-success mb-3">+ Νέα Κράτηση</a>
-    }
-    else if (Model.RemainingSessions == 0)
-    {
-        <div class="alert alert-warning">Έχουν χρησιμοποιηθεί όλες οι συνεδρίες.</div>
-    }
+@if (Model.RemainingSessions == 0)
+{
+    <div class="alert alert-warning mb-3">
+        <i class="ti ti-alert-triangle"></i> Έχουν χρησιμοποιηθεί όλες οι συνεδρίες.
+    </div>
+}
 
-    <table class="table table-striped">
+<div class="card">
+    <table class="table mb-0">
         <thead>
             <tr>
                 <th>Ημερομηνία</th>
@@ -66,49 +102,70 @@
             @if (!Model.Bookings.Any())
             {
                 <tr>
-                    <td colspan="4" class="text-center text-muted">Δεν υπάρχουν κρατήσεις.</td>
+                    <td colspan="4" class="text-center py-4" style="color:var(--text-3)">
+                        <i class="ti ti-calendar-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        Δεν υπάρχουν κρατήσεις.
+                    </td>
                 </tr>
             }
             @foreach (var booking in Model.Bookings)
             {
                 <tr>
-                    <td>@booking.BookingDate.ToShortDateString()</td>
-                    <td>@booking.TimeSlot.StartTime.ToString("HH:mm")</td>
+                    <td style="font-size:.82rem;font-family:var(--font-mono);white-space:nowrap">
+                        @booking.BookingDate.ToShortDateString()
+                    </td>
+                    <td style="font-size:.82rem;font-family:var(--font-mono)">
+                        @booking.TimeSlot.StartTime.ToString("HH:mm")
+                    </td>
                     <td>
                         @switch (booking.Status)
                         {
                             case GymApp.Models.BookingStatus.Booked:
-                                <span class="badge bg-primary">Κράτηση</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--accent-lt);color:var(--accent);font-weight:600">
+                                    <i class="ti ti-clock"></i> Κράτηση
+                                </span>
                                 break;
                             case GymApp.Models.BookingStatus.Attended:
-                                <span class="badge bg-success">Παρουσία</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">
+                                    <i class="ti ti-check"></i> Παρουσία
+                                </span>
                                 break;
                             case GymApp.Models.BookingStatus.Cancelled:
-                                <span class="badge bg-secondary">Ακυρώθηκε</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--bg-4);color:var(--text-3);font-weight:600">
+                                    <i class="ti ti-ban"></i> Ακυρώθηκε
+                                </span>
                                 break;
                             case GymApp.Models.BookingStatus.NoShow:
-                                <span class="badge bg-danger">No Show</span>
+                                <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--red-lt);color:var(--red);font-weight:600">
+                                    <i class="ti ti-user-x"></i> No Show
+                                </span>
                                 break;
                         }
                     </td>
                     <td>
                         @if (booking.Status == GymApp.Models.BookingStatus.Booked)
                         {
-                            <form method="post" asp-page="UpdateStatus" asp-route-id="@booking.Id" asp-route-status="Attended" style="display:inline">
-                                <button type="submit" class="btn btn-sm btn-success">✓ Παρουσία</button>
-                            </form>
-                            <form method="post" asp-page="Cancel" asp-route-id="@booking.Id" style="display:inline">
-                                <button type="submit" class="btn btn-sm btn-warning">Ακύρωση</button>
-                            </form>
-                            <form method="post" asp-page="UpdateStatus" asp-route-id="@booking.Id" asp-route-status="NoShow" style="display:inline">
-                                <button type="submit" class="btn btn-sm btn-danger">No Show</button>
-                            </form>
+                            <div class="d-flex gap-2">
+                                <form method="post" asp-page="UpdateStatus" asp-route-id="@booking.Id" asp-route-status="Attended">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="ti ti-check"></i> Παρουσία
+                                    </button>
+                                </form>
+                                <form method="post" asp-page="Cancel" asp-route-id="@booking.Id">
+                                    <button type="submit" class="btn btn-sm btn-secondary">
+                                        <i class="ti ti-ban"></i> Ακύρωση
+                                    </button>
+                                </form>
+                                <form method="post" asp-page="UpdateStatus" asp-route-id="@booking.Id" asp-route-status="NoShow">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="ti ti-user-x"></i> No Show
+                                    </button>
+                                </form>
+                            </div>
                         }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <a asp-page="/Subscriptions/Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary mt-2">← Επιστροφή</a>
 </div>

@@ -1,14 +1,28 @@
 ﻿@page "{gymProgramId:int}"
 @model GymApp.Pages.SubscriptionPlans.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-1">
-        <h2>Πακέτα — @Model.GymProgram.Name</h2>
-        <a asp-page="Create" asp-route-gymProgramId="@Model.GymProgram.Id" class="btn btn-primary">+ Νέο Πακέτο</a>
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+            <i class="ti ti-arrow-left"></i>
+            <a asp-page="/GymPrograms/Index" style="color:var(--text-3);text-decoration:none">Προγράμματα</a>
+        </div>
+        <h1 style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:var(--accent);line-height:1">ΠΑΚΕΤΑ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+            <i class="ti ti-activity" style="color:var(--accent)"></i>
+            <strong style="color:var(--text-2)">@Model.GymProgram.Name</strong>
+            &nbsp;·&nbsp;
+            <span>@Model.GymProgram.Trainer.Firstname @Model.GymProgram.Trainer.Lastname</span>
+        </div>
     </div>
-    <p class="text-muted mb-3">Εκπαιδευτής: @Model.GymProgram.Trainer.Firstname @Model.GymProgram.Trainer.Lastname</p>
+    <a asp-page="Create" asp-route-gymProgramId="@Model.GymProgram.Id" class="btn btn-primary"
+           style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+        <i class="ti ti-plus"></i> ΝΕΟ ΠΑΚΕΤΟ
+    </a>
+</div>
 
-    <table class="table table-striped">
+<div class="card">
+    <table class="table mb-0">
         <thead>
             <tr>
                 <th>Συνεδρίες/μήνα</th>
@@ -20,22 +34,53 @@
             @if (!Model.Plans.Any())
             {
                 <tr>
-                    <td colspan="3" class="text-center text-muted">Δεν υπάρχουν πακέτα για αυτό το πρόγραμμα.</td>
+                    <td colspan="3" class="text-center py-4" style="color:var(--text-3)">
+                        <i class="ti ti-packages" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        Δεν υπάρχουν πακέτα για αυτό το πρόγραμμα.
+                    </td>
                 </tr>
             }
             @foreach (var plan in Model.Plans)
             {
                 <tr>
-                    <td>@plan.SessionsPerMonth συνεδρίες</td>
-                    <td>@plan.Price.ToString("C", new System.Globalization.CultureInfo("el-GR"))</td>
                     <td>
-                        <a asp-page="Edit" asp-route-id="@plan.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
-                        <a asp-page="Delete" asp-route-id="@plan.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-display);font-size:1rem;color:var(--accent)">
+                                @plan.SessionsPerMonth
+                            </div>
+                            <div>
+                                <div style="font-weight:600;color:var(--text-1);font-size:.85rem">@plan.SessionsPerMonth συνεδρίες / μήνα</div>
+                                <div style="font-size:.7rem;color:var(--text-3)">@(plan.SessionsPerMonth / 4) φορές / εβδομάδα</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:.9rem;font-weight:700;color:var(--text-1);font-family:var(--font-mono)">
+                        @plan.Price.ToString("C", new System.Globalization.CultureInfo("el-GR"))
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="ti ti-dots"></i> Ενέργειες
+                            </button>
+                            <ul class="dropdown-menu" style="background:var(--bg-3);border:1px solid var(--border)">
+                                <li>
+                                    <a class="dropdown-item" asp-page="Edit" asp-route-id="@plan.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-edit" style="color:var(--warm)"></i> Επεξεργασία
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" style="border-color:var(--border)"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="Delete" asp-route-id="@plan.Id"
+                                           style="font-size:.82rem;color:var(--red)">
+                                        <i class="ti ti-trash"></i> Διαγραφή
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <a asp-page="/GymPrograms/Index" class="btn btn-secondary mt-2">← Επιστροφή στα Προγράμματα</a>
 </div>
