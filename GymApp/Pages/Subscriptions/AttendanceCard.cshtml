@@ -1,117 +1,166 @@
 ﻿@page "{id:int}"
 @model GymApp.Pages.Subscriptions.AttendanceCardModel
 
-<div class="container mt-4" id="printArea">
-    <div class="card border-2">
-        <div class="card-header bg-dark text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">🏋️ GymApp — Κάρτα Παρουσιών</h4>
-                <span class="badge bg-light text-dark fs-6">
-                    @(Model.Subscription.IsActive ? "Ενεργή" : "Ληγμένη")
-                </span>
+<div id="printArea">
+    <div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+        <div>
+            <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px" class="d-print-none">
+                <i class="ti ti-arrow-left"></i>
+                <a asp-page="Index" asp-route-memberId="@Model.Subscription.MemberId" style="color:var(--text-3);text-decoration:none">Συνδρομές</a>
+            </div>
+            <h1 style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:var(--accent);line-height:1">ΚΑΡΤΑ ΠΑΡΟΥΣΙΩΝ</h1>
+            <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+                <strong style="color:var(--text-2)">@Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</strong>
+                &nbsp;·&nbsp;
+                @Model.Subscription.SubscriptionPlan.GymProgram.Name
             </div>
         </div>
+        <span style="font-size:.72rem;padding:4px 12px;border-radius:20px;font-weight:700;background:@(Model.Subscription.IsActive ? "var(--olive-lt)" : "var(--bg-4)");color:@(Model.Subscription.IsActive ? "var(--olive)" : "var(--text-3)")">
+            @(Model.Subscription.IsActive ? "● Ενεργή" : "○ Ληγμένη")
+        </span>
+    </div>
+
+    @* Στοιχεία συνδρομής *@
+    <div class="card mb-4">
         <div class="card-body">
-            @* Στοιχεία μέλους *@
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <table class="table table-sm table-borderless">
-                        <tr>
-                            <td class="fw-bold">Μέλος:</td>
-                            <td>@Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">Πρόγραμμα:</td>
-                            <td>@Model.Subscription.SubscriptionPlan.GymProgram.Name</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">Τμήμα:</td>
-                            <td>@(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <table class="table table-sm table-borderless">
-                        <tr>
-                            <td class="fw-bold">Πακέτο:</td>
-                            <td>@Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">Έναρξη:</td>
-                            <td>@Model.Subscription.StartDate.ToShortDateString()</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">Λήξη:</td>
-                            <td>@Model.Subscription.EndDate.ToShortDateString()</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            @* Κουτάκια συνεδριών *@
-            <h5 class="mb-3">Συνεδρίες</h5>
             <div class="row g-3">
-                @foreach (var box in Model.SessionBoxes)
-                {
-                    <div class="col-6 col-md-3">
-                        <div class="card text-center h-100 @(!box.IsEmpty ? (box.Booking!.Status == GymApp.Models.BookingStatus.Attended ? "bg-success text-white" : box.Booking.Status == GymApp.Models.BookingStatus.NoShow ? "bg-danger text-white" : "bg-warning") : "bg-light")">
-                            <div class="card-body p-2">
-                                <div class="fw-bold fs-5">#@box.Number</div>
-                                @if (box.IsEmpty)
-                                {
-                                    <div class="text-muted small">—</div>
-                                }
-                                else
-                                {
-                                    <div class="small">@box.Booking!.BookingDate.ToShortDateString()</div>
-                                    <div class="small">@box.Booking.TimeSlot.StartTime.ToString("HH:mm")</div>
-                                    <div class="mt-1">
-                                        @switch (box.Booking.Status)
-                                        {
-                                            case GymApp.Models.BookingStatus.Attended:
-                                                <span>✓ Παρουσία</span>
-                                                break;
-                                            case GymApp.Models.BookingStatus.NoShow:
-                                                <span>✗ No Show</span>
-                                                break;
-                                            case GymApp.Models.BookingStatus.Booked:
-                                                <span>● Κράτηση</span>
-                                                break;
-                                        }
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-
-            @* Σύνοψη *@
-            <div class="row mt-4">
-                <div class="col">
-                    <div class="d-flex gap-3">
-                        <span><span class="badge bg-success">✓</span> Παρουσίες: @Model.SessionBoxes.Count(b => b.Booking?.Status == GymApp.Models.BookingStatus.Attended)</span>
-                        <span><span class="badge bg-danger">✗</span> No Show: @Model.SessionBoxes.Count(b => b.Booking?.Status == GymApp.Models.BookingStatus.NoShow)</span>
-                        <span><span class="badge bg-warning text-dark">●</span> Κρατήσεις: @Model.SessionBoxes.Count(b => b.Booking?.Status == GymApp.Models.BookingStatus.Booked)</span>
-                        <span><span class="badge bg-light text-dark border">—</span> Εναπομείνασες: @Model.SessionBoxes.Count(b => b.IsEmpty)</span>
-                    </div>
+                <div class="col-md-6">
+                    <dl style="display:grid;grid-template-columns:1fr 2fr;gap:8px 16px;margin:0">
+                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Μέλος</dt>
+                        <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-weight:600">@Model.Subscription.Member.Lastname @Model.Subscription.Member.Firstname</dd>
+                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Πρόγραμμα</dt>
+                        <dd style="font-size:.85rem;color:var(--text-1);margin:0">@Model.Subscription.SubscriptionPlan.GymProgram.Name</dd>
+                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Τμήμα</dt>
+                        <dd style="font-size:.85rem;color:var(--text-1);margin:0">
+                            @if (Model.Subscription.SessionType == GymApp.Models.SessionType.Morning)
+                            {
+                                <i class="ti ti-sun" style="color:var(--warm)"></i>
+                            }
+                            else
+                            {
+                                <i class="ti ti-moon" style="color:var(--accent)"></i>
+                            }
+                            @(Model.Subscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl style="display:grid;grid-template-columns:1fr 2fr;gap:8px 16px;margin:0">
+                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Πακέτο</dt>
+                        <dd style="font-size:.85rem;color:var(--text-1);margin:0">@Model.Subscription.SubscriptionPlan.SessionsPerMonth συνεδρίες</dd>
+                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Έναρξη</dt>
+                        <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@Model.Subscription.StartDate.ToShortDateString()</dd>
+                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Λήξη</dt>
+                        <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@Model.Subscription.EndDate.ToShortDateString()</dd>
+                    </dl>
                 </div>
             </div>
         </div>
     </div>
 
-    @* Κουμπιά *@
-    <div class="mt-3 d-print-none">
-        <button onclick="window.print()" class="btn btn-primary">🖨️ Εκτύπωση</button>
-        <a asp-page="Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary">← Επιστροφή</a>
+    @* Κουτάκια συνεδριών *@
+    <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:2px;color:var(--accent);margin-bottom:16px">
+        ΣΥΝΕΔΡΙΕΣ
+    </div>
+    <div class="row g-2 mb-4">
+        @foreach (var box in Model.SessionBoxes)
+        {
+            string bg, color, border;
+            string label = "—";
+            string date = "";
+            string time = "";
+
+            if (box.IsEmpty)
+            {
+                bg = "var(--bg-3)";
+                color = "var(--text-3)";
+                border = "var(--border)";
+            }
+            else if (box.Booking!.Status == GymApp.Models.BookingStatus.Attended)
+            {
+                bg = "var(--olive)";
+                color = "var(--cream)";
+                border = "var(--olive)";
+                label = "✓ Παρουσία";
+                date = box.Booking.BookingDate.ToShortDateString();
+                time = box.Booking.TimeSlot.StartTime.ToString("HH:mm");
+            }
+            else if (box.Booking!.Status == GymApp.Models.BookingStatus.NoShow)
+            {
+                bg = "var(--red)";
+                color = "var(--cream)";
+                border = "var(--red)";
+                label = "✗ No Show";
+                date = box.Booking.BookingDate.ToShortDateString();
+                time = box.Booking.TimeSlot.StartTime.ToString("HH:mm");
+            }
+            else if (box.Booking!.Status == GymApp.Models.BookingStatus.Booked)
+            {
+                bg = "var(--warm)";
+                color = "var(--cream)";
+                border = "var(--warm)";
+                label = "● Κράτηση";
+                date = box.Booking.BookingDate.ToShortDateString();
+                time = box.Booking.TimeSlot.StartTime.ToString("HH:mm");
+            }
+            else
+            {
+                bg = "var(--bg-4)";
+                color = "var(--text-3)";
+                border = "var(--border)";
+            }
+
+            <div class="col-6 col-md-3">
+                <div style="background:@bg;border:1px solid @border;border-radius:10px;padding:14px;text-align:center">
+                    <div style="font-family:var(--font-display);font-size:1.4rem;letter-spacing:2px;color:@color">#@box.Number</div>
+                    @if (!string.IsNullOrEmpty(date))
+                    {
+                        <div style="font-size:.65rem;color:@color;font-family:var(--font-mono);margin-top:4px">@date</div>
+                        <div style="font-size:.65rem;color:@color;font-family:var(--font-mono)">@time</div>
+                    }
+                    <div style="font-size:.68rem;font-weight:700;color:@color;margin-top:6px">@label</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @* Σύνοψη *@
+    <div class="d-flex gap-3 flex-wrap mb-4">
+        <span style="font-size:.78rem;display:flex;align-items:center;gap:6px">
+            <span style="width:12px;height:12px;border-radius:3px;background:var(--olive);display:inline-block"></span>
+            Παρουσίες: <strong>@Model.SessionBoxes.Count(b => b.Booking?.Status == GymApp.Models.BookingStatus.Attended)</strong>
+        </span>
+        <span style="font-size:.78rem;display:flex;align-items:center;gap:6px">
+            <span style="width:12px;height:12px;border-radius:3px;background:var(--red);display:inline-block"></span>
+            No Show: <strong>@Model.SessionBoxes.Count(b => b.Booking?.Status == GymApp.Models.BookingStatus.NoShow)</strong>
+        </span>
+        <span style="font-size:.78rem;display:flex;align-items:center;gap:6px">
+            <span style="width:12px;height:12px;border-radius:3px;background:var(--warm);display:inline-block"></span>
+            Κρατήσεις: <strong>@Model.SessionBoxes.Count(b => b.Booking?.Status == GymApp.Models.BookingStatus.Booked)</strong>
+        </span>
+        <span style="font-size:.78rem;display:flex;align-items:center;gap:6px">
+            <span style="width:12px;height:12px;border-radius:3px;background:var(--bg-4);border:1px solid var(--border);display:inline-block"></span>
+            Εναπομείνασες: <strong>@Model.SessionBoxes.Count(b => b.IsEmpty)</strong>
+        </span>
     </div>
 </div>
 
-@* Print CSS *@
+@* Κουμπιά *@
+<div class="d-flex gap-2 d-print-none">
+    <button onclick="window.print()" class="btn btn-primary">
+        <i class="ti ti-printer"></i> Εκτύπωση
+    </button>
+    <a asp-page="Index" asp-route-memberId="@Model.Subscription.MemberId" class="btn btn-secondary">
+        <i class="ti ti-arrow-left"></i> Επιστροφή
+    </a>
+</div>
+
 <style>
     @@media print {
         .d-print-none { display: none !important; }
-        nav, footer { display: none !important; }
-        .container { max-width: 100% !important; }
+        .gym-sidebar, .gym-appbar, .gym-footer { display: none !important; }
+        .gym-layout { display: block !important; }
+        .gym-main { overflow: visible !important; }
+        .gym-page { padding: 0 !important; }
     }
 </style>
