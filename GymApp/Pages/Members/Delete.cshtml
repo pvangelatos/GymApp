@@ -1,30 +1,45 @@
 ﻿@page "{id:int}"
 @model GymApp.Pages.Members.DeleteModel
 
-<div class="container mt-4">
-    <h2>Διαγραφή Μέλους</h2>
-    <hr />
-
-    <div class="alert alert-warning">
-        Είστε σίγουροι ότι θέλετε να απενεργοποιήσετε το παρακάτω μέλος;
+<div class="mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+        <i class="ti ti-arrow-left"></i>
+        <a asp-page="Index" style="color:var(--text-3);text-decoration:none">Μέλη</a>
     </div>
+    <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--red);line-height:1">ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</h1>
+</div>
 
-    <dl class="row">
-        <dt class="col-sm-3">Όνομα</dt>
-        <dd class="col-sm-9">@Model.Member.Firstname</dd>
-
-        <dt class="col-sm-3">Επώνυμο</dt>
-        <dd class="col-sm-9">@Model.Member.Lastname</dd>
-
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">@Model.Member.Email</dd>
-
-        <dt class="col-sm-3">Τηλέφωνο</dt>
-        <dd class="col-sm-9">@Model.Member.Phone</dd>
-    </dl>
-
-    <form method="post">
-        <button type="submit" class="btn btn-danger">Απενεργοποίηση</button>
-        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
-    </form>
+<div class="row">
+    <div class="col-md-6">
+        <div class="alert alert-danger">
+            <i class="ti ti-alert-triangle"></i>
+            Είστε σίγουροι ότι θέλετε να απενεργοποιήσετε το παρακάτω μέλος;
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+                    <div style="width:44px;height:44px;border-radius:50%;background:var(--red-lt);border:2px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:var(--red);font-family:var(--font-mono)">
+                        @(Model.Member.Lastname.Length > 0 ? Model.Member.Lastname[0].ToString() : "")@(Model.Member.Firstname.Length > 0 ? Model.Member.Firstname[0].ToString() : "")
+                    </div>
+                    <div style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:2px;color:var(--text-1)">@Model.Member.Lastname @Model.Member.Firstname</div>
+                </div>
+                <dl style="display:grid;grid-template-columns:1fr 2fr;gap:10px 16px">
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Email</dt>
+                    <dd style="font-size:.82rem;color:var(--text-1);margin:0">@Model.Member.Email</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Τηλέφωνο</dt>
+                    <dd style="font-size:.82rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@Model.Member.Phone</dd>
+                </dl>
+                <form method="post" class="mt-4">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="ti ti-user-off"></i> Απενεργοποίηση
+                        </button>
+                        <a asp-page="Index" class="btn btn-secondary">
+                            <i class="ti ti-x"></i> Ακύρωση
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

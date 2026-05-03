@@ -1,39 +1,57 @@
 ﻿@page "{id:int}"
 @model GymApp.Pages.Members.DetailsModel
 
-<div class="container mt-4">
-    <h2>Στοιχεία Μέλους</h2>
-    <hr />
+<div class="mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+        <i class="ti ti-arrow-left"></i>
+        <a asp-page="Index" style="color:var(--text-3);text-decoration:none">Μέλη</a>
+    </div>
+    <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--accent);line-height:1">ΣΤΟΙΧΕΙΑ ΜΕΛΟΥΣ</h1>
+</div>
 
-    <dl class="row">
-        <dt class="col-sm-3">Όνομα</dt>
-        <dd class="col-sm-9">@Model.Member.Firstname</dd>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+                    <div style="width:56px;height:56px;border-radius:50%;background:var(--accent-md);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:var(--accent);font-family:var(--font-mono)">
+                        @(Model.Member.Lastname.Length > 0 ? Model.Member.Lastname[0].ToString() : "")@(Model.Member.Firstname.Length > 0 ? Model.Member.Firstname[0].ToString() : "")
+                    </div>
+                    <div>
+                        <div style="font-family:var(--font-display);font-size:1.4rem;letter-spacing:2px;color:var(--text-1)">@Model.Member.Lastname @Model.Member.Firstname</div>
+                        <div style="font-size:.72rem;color:var(--text-3);margin-top:2px">
+                            @if (Model.Member.IsActive)
+                            {
+                                <span style="color:var(--olive)"><i class="ti ti-check"></i> Ενεργό μέλος</span>
+                            }
+                            else
+                            {
+                                <span style="color:var(--text-3)"><i class="ti ti-x"></i> Ανενεργό</span>
+                            }
+                        </div>
+                    </div>
+                </div>
 
-        <dt class="col-sm-3">Επώνυμο</dt>
-        <dd class="col-sm-9">@Model.Member.Lastname</dd>
+                <dl style="display:grid;grid-template-columns:1fr 2fr;gap:12px 16px">
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Email</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@Model.Member.Email</dd>
 
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">@Model.Member.Email</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Τηλέφωνο</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@Model.Member.Phone</dd>
 
-        <dt class="col-sm-3">Τηλέφωνο</dt>
-        <dd class="col-sm-9">@Model.Member.Phone</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Εγγραφή</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@Model.Member.DateJoined.ToShortDateString()</dd>
+                </dl>
 
-        <dt class="col-sm-3">Ημερομηνία Εγγραφής</dt>
-        <dd class="col-sm-9">@Model.Member.DateJoined.ToShortDateString()</dd>
-
-        <dt class="col-sm-3">Κατάσταση</dt>
-        <dd class="col-sm-9">
-            @if (Model.Member.IsActive)
-            {
-                <span class="badge bg-success">Ενεργό</span>
-            }
-            else
-            {
-                <span class="badge bg-secondary">Ανενεργό</span>
-            }
-        </dd>
-    </dl>
-
-    <a asp-page="Edit" asp-route-id="@Model.Member.Id" class="btn btn-warning">Επεξεργασία</a>
-    <a asp-page="Index" class="btn btn-secondary">Επιστροφή</a>
+                <div class="d-flex gap-2 mt-4">
+                    <a asp-page="Edit" asp-route-id="@Model.Member.Id" class="btn btn-primary">
+                        <i class="ti ti-edit"></i> Επεξεργασία
+                    </a>
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="ti ti-arrow-left"></i> Επιστροφή
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

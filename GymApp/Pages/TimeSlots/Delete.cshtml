@@ -1,35 +1,45 @@
 ﻿@page "{id:int}"
 @model GymApp.Pages.TimeSlots.DeleteModel
 
-<div class="container mt-4">
-    <h2>Διαγραφή Slot</h2>
-    <hr />
-
-    <div class="alert alert-danger">
-        Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το slot;
+<div class="mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+        <i class="ti ti-arrow-left"></i>
+        <a asp-page="Index" asp-route-gymProgramId="@Model.TimeSlot.GymProgramId" style="color:var(--text-3);text-decoration:none">Πρόγραμμα</a>
     </div>
+    <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--red);line-height:1">ΔΙΑΓΡΑΦΗ SLOT</h1>
+</div>
 
-    <dl class="row">
-        <dt class="col-sm-3">Πρόγραμμα</dt>
-        <dd class="col-sm-9">@Model.TimeSlot.GymProgram.Name</dd>
-
-        <dt class="col-sm-3">Ημέρα</dt>
-        <dd class="col-sm-9">@Model.TimeSlot.DayOfWeek</dd>
-
-        <dt class="col-sm-3">Ώρα</dt>
-        <dd class="col-sm-9">@Model.TimeSlot.StartTime.ToString("HH:mm")</dd>
-
-        <dt class="col-sm-3">Τμήμα</dt>
-        <dd class="col-sm-9">@(Model.TimeSlot.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</dd>
-
-        <dt class="col-sm-3">Θέσεις</dt>
-        <dd class="col-sm-9">@Model.TimeSlot.Capacity</dd>
-    </dl>
-
-    <form method="post">
-        <input type="hidden" asp-for="TimeSlot.Id" />
-        <input type="hidden" asp-for="TimeSlot.GymProgramId" />
-        <button type="submit" class="btn btn-danger">Διαγραφή</button>
-        <a asp-page="Index" asp-route-gymProgramId="@Model.TimeSlot.GymProgramId" class="btn btn-secondary">Ακύρωση</a>
-    </form>
+<div class="row">
+    <div class="col-md-5">
+        <div class="alert alert-danger">
+            <i class="ti ti-alert-triangle"></i> Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το slot;
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <dl style="display:grid;grid-template-columns:1fr 2fr;gap:10px 16px">
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Πρόγραμμα</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@Model.TimeSlot.GymProgram.Name</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Ημέρα</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@Model.TimeSlot.DayOfWeek</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Ώρα</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@Model.TimeSlot.StartTime.ToString("HH:mm")</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Τμήμα</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@(Model.TimeSlot.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</dd>
+                    <dt style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Θέσεις</dt>
+                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@Model.TimeSlot.Capacity</dd>
+                </dl>
+                <form method="post" class="mt-4">
+                    <input type="hidden" asp-for="TimeSlot.GymProgramId" />
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="ti ti-trash"></i> Διαγραφή
+                        </button>
+                        <a asp-page="Index" asp-route-gymProgramId="@Model.TimeSlot.GymProgramId" class="btn btn-secondary">
+                            <i class="ti ti-x"></i> Ακύρωση
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

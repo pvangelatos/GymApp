@@ -2,6 +2,7 @@ using GymApp.Data;
 using GymApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymApp.Pages.Members
 {
@@ -23,6 +24,17 @@ namespace GymApp.Pages.Members
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
+
+
+            // Έλεγχος για duplicate email
+            var exists = await _context.Members
+                .AnyAsync(m => m.Email.ToLower() == Member.Email.ToLower());
+
+            if (exists)
+            {
+                ModelState.AddModelError("Member.Email", "Υπάρχει ήδη μέλος με αυτό το email.");
+                return Page();
+            }
 
             Member.DateJoined = DateTime.Now;
             Member.IsActive = true;

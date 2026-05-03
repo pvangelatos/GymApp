@@ -1,43 +1,59 @@
 ﻿@page "{id:int}"
 @model GymApp.Pages.Members.EditModel
 
-<div class="container mt-4">
-    <h2>Επεξεργασία Μέλους</h2>
-    <hr />
+<div class="mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+        <i class="ti ti-arrow-left"></i>
+        <a asp-page="Index" style="color:var(--text-3);text-decoration:none">Μέλη</a>
+    </div>
+    <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--accent);line-height:1">ΕΠΕΞΕΡΓΑΣΙΑ ΜΕΛΟΥΣ</h1>
+</div>
 
-    <form method="post">
-        <input type="hidden" asp-for="Member.Id" />
-        <input type="hidden" asp-for="Member.DateJoined" />
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    <input type="hidden" asp-for="Member.Id" />
+                    <input type="hidden" asp-for="Member.DateJoined" />
 
-        <div class="mb-3">
-            <label asp-for="Member.Firstname" class="form-label">Όνομα</label>
-            <input asp-for="Member.Firstname" class="form-control" />
-            <span asp-validation-for="Member.Firstname" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Member.Lastname" class="form-label">Επώνυμο</label>
-            <input asp-for="Member.Lastname" class="form-control" />
-            <span asp-validation-for="Member.Lastname" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Member.Email" class="form-label">Email</label>
-            <input asp-for="Member.Email" class="form-control" />
-            <span asp-validation-for="Member.Email" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Member.Phone" class="form-label">Τηλέφωνο</label>
-            <input asp-for="Member.Phone" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <div class="form-check">
-                <input asp-for="Member.IsActive" class="form-check-input" />
-                <label asp-for="Member.IsActive" class="form-check-label">Ενεργό</label>
+                    <div class="mb-3">
+                        <label asp-for="Member.Firstname" class="form-label">Όνομα</label>
+                        <input asp-for="Member.Firstname" class="form-control" />
+                        <span asp-validation-for="Member.Firstname" class="text-danger" style="font-size:.75rem"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Member.Lastname" class="form-label">Επώνυμο</label>
+                        <input asp-for="Member.Lastname" class="form-control" />
+                        <span asp-validation-for="Member.Lastname" class="text-danger" style="font-size:.75rem"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Member.Email" class="form-label">Email</label>
+                        <input asp-for="Member.Email" class="form-control" type="email" />
+                        <span asp-validation-for="Member.Email" class="text-danger" style="font-size:.75rem"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Member.Phone" class="form-label">Τηλέφωνο</label>
+                        <input asp-for="Member.Phone" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="Member.IsActive" class="form-check-input" />
+                            <label asp-for="Member.IsActive" class="form-check-label">Ενεργό μέλος</label>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-floppy"></i> Αποθήκευση
+                        </button>
+                        <a asp-page="Index" class="btn btn-secondary">
+                            <i class="ti ti-x"></i> Ακύρωση
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <button type="submit" class="btn btn-primary">Αποθήκευση</button>
-        <a asp-page="Index" class="btn btn-secondary">Ακύρωση</a>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

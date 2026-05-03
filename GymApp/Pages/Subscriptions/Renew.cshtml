@@ -1,48 +1,68 @@
 ﻿@page "{id:int}"
 @model GymApp.Pages.Subscriptions.RenewModel
 
-<div class="container mt-4">
-    <h2>Ανανέωση Συνδρομής — @Model.OldSubscription.Member.Firstname @Model.OldSubscription.Member.Lastname</h2>
-    <hr />
-
-    <div class="alert alert-info mb-4">
-        <strong>Τρέχουσα συνδρομή:</strong>
-        @Model.OldSubscription.SubscriptionPlan.GymProgram.Name —
-        @Model.OldSubscription.SubscriptionPlan.SessionsPerMonth συνεδρίες —
-        @(Model.OldSubscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα") —
-        Λήξη: @Model.OldSubscription.EndDate.ToShortDateString()
+<div class="mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:4px">
+        <i class="ti ti-arrow-left"></i>
+        <a asp-page="Index" asp-route-memberId="@Model.OldSubscription.MemberId" style="color:var(--text-3);text-decoration:none">Συνδρομές</a>
     </div>
+    <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--olive);line-height:1">ΑΝΑΝΕΩΣΗ ΣΥΝΔΡΟΜΗΣ</h1>
+    <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+        <i class="ti ti-user" style="color:var(--accent)"></i>
+        <strong style="color:var(--text-2)">@Model.OldSubscription.Member.Lastname @Model.OldSubscription.Member.Firstname</strong>
+    </div>
+</div>
 
-    @if (!ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <p class="mb-0">@error.ErrorMessage</p>
-            }
-        </div>
-    }
-
-    <form method="post">
-        <input type="hidden" asp-for="NewSubscription.MemberId" />
-        <input type="hidden" name="oldSubscriptionId" value="@Model.OldSubscription.Id" /> 
-
-
-        <div class="mb-3">
-            <label asp-for="NewSubscription.SubscriptionPlanId" class="form-label">Πακέτο</label>
-            <select asp-for="NewSubscription.SubscriptionPlanId" asp-items="Model.PlanList" class="form-select"></select>
-        </div>
-        <div class="mb-3">
-            <label asp-for="NewSubscription.SessionType" class="form-label">Τμήμα</label>
-            <select asp-for="NewSubscription.SessionType" asp-items="Model.SessionTypeList" class="form-select"></select>
-        </div>
-        <div class="mb-3">
-            <label asp-for="NewSubscription.StartDate" class="form-label">Ημερομηνία Έναρξης</label>
-            <input asp-for="NewSubscription.StartDate" type="date" class="form-control"
-                   value="@Model.NewSubscription.StartDate.ToString("yyyy-MM-dd")" />
+<div class="row">
+    <div class="col-md-6">
+        <div class="alert alert-info mb-4">
+            <i class="ti ti-info-circle"></i>
+            <strong>Τρέχουσα συνδρομή:</strong>
+            @Model.OldSubscription.SubscriptionPlan.GymProgram.Name —
+            @Model.OldSubscription.SubscriptionPlan.SessionsPerMonth συνεδρίες —
+            @(Model.OldSubscription.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα") —
+            Λήξη: @Model.OldSubscription.EndDate.ToShortDateString()
         </div>
 
-        <button type="submit" class="btn btn-success">Ανανέωση</button>
-        <a asp-page="Index" asp-route-memberId="@Model.OldSubscription.MemberId" class="btn btn-secondary">Ακύρωση</a>
-    </form>
+        @if (!ModelState.IsValid)
+        {
+            <div class="alert alert-danger mb-3">
+                @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p class="mb-0"><i class="ti ti-alert-circle"></i> @error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    <input type="hidden" asp-for="NewSubscription.MemberId" />
+                    <input type="hidden" name="oldSubscriptionId" value="@Model.OldSubscription.Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="NewSubscription.SubscriptionPlanId" class="form-label">Πακέτο</label>
+                        <select asp-for="NewSubscription.SubscriptionPlanId" asp-items="Model.PlanList" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewSubscription.SessionType" class="form-label">Τμήμα</label>
+                        <select asp-for="NewSubscription.SessionType" asp-items="Model.SessionTypeList" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewSubscription.StartDate" class="form-label">Ημερομηνία Έναρξης</label>
+                        <input asp-for="NewSubscription.StartDate" type="date" class="form-control"
+                               value="@Model.NewSubscription.StartDate.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-success">
+                            <i class="ti ti-refresh"></i> Ανανέωση
+                        </button>
+                        <a asp-page="Index" asp-route-memberId="@Model.OldSubscription.MemberId" class="btn btn-secondary">
+                            <i class="ti ti-x"></i> Ακύρωση
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
