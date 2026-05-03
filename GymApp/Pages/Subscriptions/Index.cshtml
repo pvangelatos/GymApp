@@ -127,8 +127,8 @@
                                 }
                                 <li><hr class="dropdown-divider" style="border-color:var(--border)"></li>
                                 <li>
-                                    <a class="dropdown-item" asp-page="Delete" asp-route-id="@sub.Id"
-                                           style="font-size:.82rem;color:var(--red)">
+                                    <a class="dropdown-item" style="font-size:.82rem;color:var(--red);cursor:pointer"
+                                           data-bs-toggle="modal" data-bs-target="#deleteModal_@sub.Id">
                                         <i class="ti ti-trash"></i> Διαγραφή
                                     </a>
                                 </li>
@@ -136,6 +136,44 @@
                         </div>
                     </td>
                 </tr>
+                <div class="modal fade" id="deleteModal_@sub.Id" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background:var(--bg-3);border:1px solid var(--border)">
+                            <div class="modal-header" style="border-bottom:1px solid var(--border)">
+                                <div style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:2px;color:var(--red)">
+                                    ΔΙΑΓΡΑΦΗ ΣΥΝΔΡΟΜΗΣ
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-danger" style="font-size:.82rem">
+                                    <i class="ti ti-alert-triangle"></i> Θα διαγραφούν και όλες οι σχετικές κρατήσεις και πληρωμές.
+                                </div>
+                                <dl style="display:grid;grid-template-columns:1fr 2fr;gap:8px 16px">
+                                    <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Πρόγραμμα</dt>
+                                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@sub.SubscriptionPlan.GymProgram.Name</dd>
+                                    <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Πακέτο</dt>
+                                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@sub.SubscriptionPlan.SessionsPerMonth συνεδρίες</dd>
+                                    <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Τμήμα</dt>
+                                    <dd style="font-size:.85rem;color:var(--text-1);margin:0">@(sub.SessionType == GymApp.Models.SessionType.Morning ? "Πρωί" : "Απόγευμα")</dd>
+                                    <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Λήξη</dt>
+                                    <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@sub.EndDate.ToShortDateString()</dd>
+                                </dl>
+                            </div>
+                            <div class="modal-footer" style="border-top:1px solid var(--border)">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                                    <i class="ti ti-x"></i> Ακύρωση
+                                </button>
+                                <form method="post" asp-page="Delete" asp-route-id="@sub.Id">
+                                    <input type="hidden" name="Subscription.MemberId" value="@sub.MemberId" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="ti ti-trash"></i> Διαγραφή
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
         </tbody>
     </table>

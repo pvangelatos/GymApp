@@ -134,11 +134,45 @@ else
                         </td>
                         <td style="font-size:.82rem;color:var(--text-2)">@payment.Notes</td>
                         <td>
-                            <a asp-page="Delete" asp-route-id="@payment.Id" class="btn btn-sm btn-danger">
+                            <a class="btn btn-sm btn-danger" style="cursor:pointer"
+                                   data-bs-toggle="modal" data-bs-target="#deleteModal_@payment.Id">
                                 <i class="ti ti-trash"></i>
                             </a>
                         </td>
                     </tr>
+                    <div class="modal fade" id="deleteModal_@payment.Id" tabindex="-1">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content" style="background:var(--bg-3);border:1px solid var(--border)">
+                                <div class="modal-header" style="border-bottom:1px solid var(--border)">
+                                    <div style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:2px;color:var(--red)">
+                                        ΔΙΑΓΡΑΦΗ ΠΛΗΡΩΜΗΣ
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <dl style="display:grid;grid-template-columns:1fr 2fr;gap:8px 16px">
+                                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Ημερομηνία</dt>
+                                        <dd style="font-size:.85rem;color:var(--text-1);margin:0;font-family:var(--font-mono)">@payment.PaymentDate.ToShortDateString()</dd>
+                                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Ποσό</dt>
+                                        <dd style="font-size:.85rem;font-weight:700;color:var(--text-1);margin:0;font-family:var(--font-mono)">@payment.Amount.ToString("C", new System.Globalization.CultureInfo("el-GR"))</dd>
+                                        <dt style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Απόδειξη</dt>
+                                        <dd style="font-size:.85rem;color:var(--text-1);margin:0">@(payment.HasReceipt ? "Ναι" : "Όχι")</dd>
+                                    </dl>
+                                </div>
+                                <div class="modal-footer" style="border-top:1px solid var(--border)">
+                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                                        <i class="ti ti-x"></i> Ακύρωση
+                                    </button>
+                                    <form method="post" asp-page="Delete" asp-route-id="@payment.Id">
+                                        <input type="hidden" name="Payment.SubscriptionId" value="@payment.SubscriptionId" />
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="ti ti-trash"></i> Διαγραφή
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
             </tbody>
         </table>

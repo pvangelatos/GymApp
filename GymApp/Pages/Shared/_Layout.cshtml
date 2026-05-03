@@ -66,7 +66,7 @@
                 <div class="gym-nav-section">Αναφορές</div>
                 <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Reports/ExpiringSubscriptions" ? "active" : "")"
                        asp-page="/Reports/ExpiringSubscriptions">
-                    <i class="ti ti-alert-triangle"></i> Ληγούσες
+                    <i class="ti ti-alert-triangle"></i> Λήγουσες
                     @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
                     {
                         <span class="gym-nav-badge gym-nav-badge-red">@(ViewData["ExpiringCount"] ?? 0)</span>
