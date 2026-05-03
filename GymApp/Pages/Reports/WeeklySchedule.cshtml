@@ -11,163 +11,218 @@
         DayOfWeek.Saturday => "Σάββατο",
         _ => day.ToString()
     };
+    var weekOffset = Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"].ToString()) : 0;
 }
 
-<div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>📅 Εβδομαδιαίο Πρόγραμμα</h2>
-        <a asp-page="/Index" class="btn btn-secondary">← Dashboard</a>
-    </div>
-
-    @* Πλοήγηση εβδομάδας *@
-    <div class="d-flex align-items-center gap-3 mb-4">
-        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"].ToString()) - 1 : -1)"
-           class="btn btn-outline-primary">← Προηγούμενη</a>
-        <h5 class="mb-0">
+<div class="d-flex justify-content-between align-items-center mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <h1 style="font-family:var(--font-display);font-size:2rem;letter-spacing:4px;color:var(--accent);line-height:1">ΕΒΔΟΜΑΔΙΑΙΟ ΠΡΟΓΡΑΜΜΑ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px;font-family:var(--font-mono)">
             @Model.WeekStart.ToString("dd/MM/yyyy") — @Model.WeekEnd.ToString("dd/MM/yyyy")
-        </h5>
-        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(Request.Query["weekOffset"].Count > 0 ? int.Parse(Request.Query["weekOffset"].ToString()) + 1 : 1)"
-           class="btn btn-outline-primary">Επόμενη →</a>
-        <a asp-page="WeeklySchedule" class="btn btn-outline-secondary">Τρέχουσα</a>
+        </div>
     </div>
+    <div class="d-flex gap-2">
+        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(weekOffset - 1)" class="btn btn-secondary">
+            <i class="ti ti-arrow-left"></i> Προηγούμενη
+        </a>
+        <a asp-page="WeeklySchedule" class="btn btn-secondary">
+            <i class="ti ti-calendar"></i> Τρέχουσα
+        </a>
+        <a asp-page="WeeklySchedule" asp-route-weekOffset="@(weekOffset + 1)" class="btn btn-secondary">
+            Επόμενη <i class="ti ti-arrow-right"></i>
+        </a>
+    </div>
+</div>
 
-    @* Εβδομαδιαίο grid *@
-    <div class="row g-2">
-        @foreach (var day in Model.Days)
-        {
-            var date = Model.WeekStart.AddDays(((int)day - (int)DayOfWeek.Monday + 7) % 7);
-            var isToday = date.Date == DateTime.Today;
-            var slots = Model.Schedule.ContainsKey(day) ? Model.Schedule[day] : new();
+<div class="row g-2">
+    @foreach (var day in Model.Days)
+    {
+        var date = Model.WeekStart.AddDays(((int)day - (int)DayOfWeek.Monday + 7) % 7);
+        var isToday = date.Date == DateTime.Today;
+        var slots = Model.Schedule.ContainsKey(day) ? Model.Schedule[day] : new();
 
-            <div class="col">
-                <div class="card @(isToday ? "border-primary border-2" : "")">
-                    <div class="card-header text-center @(isToday ? "bg-primary text-white" : "bg-light")">
-                        <strong>@DayName(day)</strong>
-                        <br />
-                        <small>@date.ToString("dd/MM")</small>
+        <div class="col">
+            <div class="text-center mb-2 pb-2" style="border-bottom: 2px solid @(isToday ? "var(--accent)" : "var(--border)")">
+                <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:2px;color:@(isToday ? "var(--accent)" : "var(--text-2)")">
+                    @DayName(day)
+                </div>
+                <div style="font-size:.72rem;font-family:var(--font-mono);color:@(isToday ? "var(--accent)" : "var(--text-3)")">
+                    @date.ToString("dd/MM")
+                </div>
+                @if (isToday)
+                {
+                    <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-top:2px">Σήμερα</div>
+                }
+            </div>
+
+            @if (!slots.Any())
+            {
+                <div class="text-center py-3" style="color:var(--text-3);font-size:.75rem">
+                    <i class="ti ti-calendar-off" style="display:block;font-size:1.2rem;margin-bottom:4px"></i>
+                    Κανένα μάθημα
+                </div>
+            }
+
+            @foreach (var slot in slots.OrderBy(s => s.TimeSlot.StartTime))
+            {
+                var slotModalId = $"modal_{slot.TimeSlot.Id}_{date:yyyyMMdd}";
+                var isFull = slot.IsFull;
+                var pct = slot.TimeSlot.Capacity > 0 ? slot.BookedCount * 100 / slot.TimeSlot.Capacity : 0;
+                var slotBg = pct <= 60 ? "var(--olive-lt)" : pct <= 80 ? "var(--warm-lt)" : "var(--red-lt)";
+                var slotColor = pct <= 60 ? "var(--olive)" : pct <= 80 ? "var(--warm)" : "var(--red)";
+
+                <div class="mb-2"
+                     data-bs-toggle="modal"
+                     data-bs-target="#@slotModalId"
+                     style="background:var(--bg-3);border:1px solid @(isFull ? "var(--red)" : isToday ? "var(--accent)" : "var(--border)");border-radius:8px;padding:10px;cursor:pointer;transition:all .12s"
+                     onmouseover="this.style.background='var(--accent-lt)'"
+                     onmouseout="this.style.background='var(--bg-3)'">
+                    <div style="font-weight:600;font-size:.78rem;color:var(--text-1)">@slot.TimeSlot.GymProgram.Name</div>
+                    <div style="font-size:.72rem;font-family:var(--font-mono);color:var(--text-3)">@slot.TimeSlot.StartTime.ToString("HH:mm")</div>
+                    <div style="font-size:.65rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">
+                        @slot.TimeSlot.GymProgram.Trainer.Lastname @slot.TimeSlot.GymProgram.Trainer.Firstname
                     </div>
-                    <div class="card-body p-2">
-                        @if (!slots.Any())
+                    <div class="mt-1">
+                        @if (isFull)
                         {
-                            <p class="text-muted text-center small">Δεν υπάρχουν μαθήματα</p>
+                            <span style="font-size:.62rem;padding:2px 6px;border-radius:4px;background:var(--red);color:var(--cream);font-weight:700">
+                                @slot.BookedCount/@slot.TimeSlot.Capacity
+                            </span>
                         }
-                        @foreach (var slot in slots.OrderBy(s => s.TimeSlot.StartTime))
+                        else
                         {
-                            var slotModalId = $"modal_{slot.TimeSlot.Id}_{date:yyyyMMdd}";
-    
-                            <div class="card mb-2 @(slot.IsFull ? "border-danger" : "border-success")"
-                                 style="font-size: 0.85rem; cursor: pointer;"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#@slotModalId">
-                                <div class="card-body p-2">
-                                    <div class="fw-bold">@slot.TimeSlot.GymProgram.Name</div>
-                                    <div class="text-muted">@slot.TimeSlot.StartTime.ToString("HH:mm")</div>
-                                    <div class="text-muted small">@slot.TimeSlot.GymProgram.Trainer.Firstname @slot.TimeSlot.GymProgram.Trainer.Lastname</div>
-                                    <div class="mt-1">
-                                        @if (slot.IsFull)
-                                        {
-                                            <span class="badge bg-danger">Πλήρες</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success">@slot.AvailableCount/@slot.TimeSlot.Capacity</span>
-                                        }
-                                    </div>
-                                    @if (slot.Bookings.Any())
+                            <span style="font-size:.62rem;padding:2px 6px;border-radius:4px;background:@slotColor;color:var(--cream);font-weight:700">
+                                @slot.BookedCount/@slot.TimeSlot.Capacity
+                            </span>
+                        }
+                    </div>
+                    @if (slot.Bookings.Any())
+                    {
+                        <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">
+                            @foreach (var booking in slot.Bookings)
+                            {
+                                <div style="font-size:.65rem;color:var(--text-2);display:flex;align-items:center;gap:4px">
+                                    @if (booking.Status == GymApp.Models.BookingStatus.Attended)
                                     {
-                                        <hr class="my-1" />
-                                        @foreach (var booking in slot.Bookings)
-                                        {
-                                            <div class="small">
-                                                @if (booking.Status == GymApp.Models.BookingStatus.Attended)
-                                                {
-                                                    <span class="text-success">✓</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-primary">●</span>
-                                                }
-                                                @booking.MemberName
-                                            </div>
-                                        }
+                                        <i class="ti ti-check" style="color:var(--olive);font-size:.7rem"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="ti ti-circle-filled" style="color:var(--accent);font-size:.5rem"></i>
+                                    }
+                                    @booking.MemberName
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                @* Modal *@
+                <div class="modal fade" id="@slotModalId" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background:var(--bg-3);border:1px solid var(--border)">
+                            <div class="modal-header" style="border-bottom:1px solid var(--border)">
+                                <div>
+                                    <div style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:2px;color:var(--accent)">
+                                        @slot.TimeSlot.GymProgram.Name
+                                    </div>
+                                    <div style="font-size:.72rem;color:var(--text-3);font-family:var(--font-mono)">
+                                        @slot.TimeSlot.StartTime.ToString("HH:mm") · @date.ToString("dd/MM/yyyy")
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3" style="display:flex;gap:12px">
+                                    <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--accent-lt);color:var(--accent);font-weight:600">
+                                        <i class="ti ti-users"></i> @slot.BookedCount/@slot.TimeSlot.Capacity θέσεις
+                                    </span>
+                                    @if (isFull)
+                                    {
+                                        <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--red-lt);color:var(--red);font-weight:600">
+                                            <i class="ti ti-lock"></i> Πλήρες
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="font-size:.75rem;padding:3px 8px;border-radius:4px;background:@slotBg;color:@slotColor;font-weight:600">
+                                            <i class="ti ti-check"></i> @slot.AvailableCount διαθέσιμες
+                                        </span>
                                     }
                                 </div>
-                            </div>
 
-                            @* Modal για κράτηση *@
-                            <div class="modal fade" id="@slotModalId" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                @slot.TimeSlot.GymProgram.Name — @slot.TimeSlot.StartTime.ToString("HH:mm") — @date.ToString("dd/MM/yyyy")
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p class="text-muted">Διαθέσιμες θέσεις: <strong>@slot.AvailableCount/@slot.TimeSlot.Capacity</strong></p>
-                    
-                                            @if (!slot.AvailableMembers.Any())
-                                            {
-                                                <div class="alert alert-info">Δεν υπάρχουν μέλη με ενεργή συνδρομή για αυτό το πρόγραμμα.</div>
-                                            }
-                                            else
-                                            {
-                                                <table class="table table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Μέλος</th>
-                                                            <th>Εναπομείνασες</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var member in slot.AvailableMembers.OrderBy(m => m.MemberName))
-                                                        {
-                                                            <tr class="@(member.AlreadyBooked ? "table-secondary" : "")">
-                                                                <td>@member.MemberName</td>
-                                                                <td>
-                                                                    @if (member.AlreadyBooked)
-                                                                    {
-                                                                        <span class="badge bg-secondary">Κλεισμένο</span>
-                                                                    }
-                                                                    else if (member.RemainingSessions <= 0)
-                                                                    {
-                                                                        <span class="badge bg-danger">Εξαντλήθηκαν</span>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <span class="badge bg-success">@member.RemainingSessions</span>
-                                                                    }
-                                                                </td>
-                                                                <td>
-                                                                    @if (!member.AlreadyBooked && member.RemainingSessions > 0 && !slot.IsFull)
-                                                                    {
-                                                                        <form method="post" asp-page-handler="Book">
-                                                                            <input type="hidden" name="BookingSubscriptionId" value="@member.SubscriptionId" />
-                                                                            <input type="hidden" name="BookingTimeSlotId" value="@slot.TimeSlot.Id" />
-                                                                            <input type="hidden" name="BookingDate" value="@date.ToString("yyyy-MM-dd")" />
-                                                                            <input type="hidden" name="WeekOffset" value="@Request.Query["weekOffset"]" />
-                                                                            <button type="submit" class="btn btn-sm btn-primary">Κράτηση</button>
-                                                                        </form>
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            }
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Κλείσιμο</button>
-                                        </div>
+                                @if (!slot.AvailableMembers.Any())
+                                {
+                                    <div class="alert alert-info">
+                                        <i class="ti ti-info-circle"></i> Δεν υπάρχουν μέλη με ενεργή συνδρομή.
                                     </div>
-                                </div>
+                                }
+                                else
+                                {
+                                    <table class="table mb-0" style="font-size:.82rem">
+                                        <thead>
+                                            <tr>
+                                                <th>Μέλος</th>
+                                                <th>Εναπομείνασες</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var member in slot.AvailableMembers.OrderBy(m => m.MemberName))
+                                            {
+                                                <tr>
+                                                    <td style="color:var(--text-1);font-weight:@(member.AlreadyBooked ? "400" : "600")">
+                                                        @member.MemberName
+                                                    </td>
+                                                    <td>
+                                                        @if (member.AlreadyBooked)
+                                                        {
+                                                            <span style="font-size:.72rem;padding:2px 7px;border-radius:4px;background:var(--bg-4);color:var(--text-3);font-weight:600">
+                                                                <i class="ti ti-check"></i> Κλεισμένο
+                                                            </span>
+                                                        }
+                                                        else if (member.RemainingSessions <= 0)
+                                                        {
+                                                            <span style="font-size:.72rem;padding:2px 7px;border-radius:4px;background:var(--red-lt);color:var(--red);font-weight:600">
+                                                                <i class="ti ti-x"></i> Εξαντλήθηκαν
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="font-size:.72rem;padding:2px 7px;border-radius:4px;background:var(--olive-lt);color:var(--olive);font-weight:600">
+                                                                @member.RemainingSessions
+                                                            </span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (!member.AlreadyBooked && member.RemainingSessions > 0 && !isFull)
+                                                        {
+                                                            <form method="post" asp-page-handler="Book">
+                                                                <input type="hidden" name="BookingSubscriptionId" value="@member.SubscriptionId" />
+                                                                <input type="hidden" name="BookingTimeSlotId" value="@slot.TimeSlot.Id" />
+                                                                <input type="hidden" name="BookingDate" value="@date.ToString("yyyy-MM-dd")" />
+                                                                <input type="hidden" name="WeekOffset" value="@weekOffset" />
+                                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                                    <i class="ti ti-plus"></i> Κράτηση
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
                             </div>
-                        }
+                            <div class="modal-footer" style="border-top:1px solid var(--border)">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="ti ti-x"></i> Κλείσιμο
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
 </div>
