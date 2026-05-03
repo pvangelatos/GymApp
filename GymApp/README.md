@@ -23,7 +23,7 @@
 - Bootstrap 5
 - ClosedXML (Excel export)
 - Tabler Icons
-- Google Fonts (Bebas Neue, DM Sans, DM Mono)
+- Google Fonts (Bebas Neue, DM Sans, DM  Mono)
 
 ## Λειτουργίες
 
