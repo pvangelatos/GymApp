@@ -1,31 +1,484 @@
-html {
-  font-size: 14px;
+:root {
+    --bg: #F0E8D8;
+    --bg-2: #E8DEC8;
+    --bg-3: #FDFAF4;
+    --bg-4: #EDE3CF;
+    --border: rgba(140,107,74,.12);
+    --border-b: rgba(140,107,74,.25);
+    --accent: #6B4F2A;
+    --accent-lt: rgba(107,79,42,.08);
+    --accent-md: rgba(107,79,42,.15);
+    --olive: #5C6B3A;
+    --olive-lt: rgba(92,107,58,.10);
+    --brown-mid: #8C6B4A;
+    --brown-lt: #C4A882;
+    --cream: #FDFAF4;
+    --text-1: #2C1F0E;
+    --text-2: #6B5A42;
+    --text-3: #A8926E;
+    --red: #9B3A2A;
+    --red-lt: rgba(155,58,42,.10);
+    --warm: #A06B20;
+    --warm-lt: rgba(160,107,32,.10);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'DM Mono', monospace;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-1);
+    margin: 0;
+    padding: 0;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ── Layout ── */
+.gym-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ── Sidebar ── */
+.gym-sidebar {
+    width: 240px;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.gym-brand {
+    padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gym-brand-mark {
+    width: 38px;
+    height: 38px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(107,79,42,.3);
+}
+
+    .gym-brand-mark .ti {
+        font-size: 1.15rem;
+        color: var(--cream);
+    }
+
+.gym-brand-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.gym-brand-sub {
+    font-size: .58rem;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
+}
+
+.gym-nav {
+    flex: 1;
+    padding: 8px 0;
+}
+
+.gym-nav-section {
+    font-size: .58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-3);
+    padding: 16px 20px 6px;
+}
+
+.gym-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--text-2);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin: 1px 0;
+    transition: color .12s, background .12s;
+}
+
+    .gym-nav-link:hover {
+        color: var(--accent);
+        background: var(--accent-lt);
+        text-decoration: none;
+    }
+
+    .gym-nav-link.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: var(--accent-md);
+        font-weight: 600;
+    }
+
+    .gym-nav-link .ti {
+        font-size: 1rem;
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+.gym-nav-badge {
+    margin-left: auto;
+    font-size: .6rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: var(--cream);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-family: var(--font-mono);
+}
+
+.gym-nav-badge-red {
+    background: var(--red);
+}
+
+.gym-sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding: 14px 20px;
+}
+
+.gym-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .12s;
+}
+
+    .gym-user-row:hover {
+        background: var(--accent-lt);
+    }
+
+.gym-user-av {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    background: var(--bg-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.gym-user-name {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--text-1);
+}
+
+.gym-user-role {
+    font-size: .65rem;
+    color: var(--text-3);
+}
+
+/* ── Main ── */
+.gym-main {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Appbar ── */
+.gym-appbar {
+    height: 54px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 6px rgba(140,107,74,.08);
+}
+
+.gym-appbar-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+}
+
+.gym-appbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gym-date-pill {
+    padding: 5px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: .68rem;
+    font-weight: 500;
+    color: var(--text-2);
+    font-family: var(--font-mono);
+}
+
+/* ── Page ── */
+.gym-page {
+    padding: 24px;
+    flex: 1;
+}
+
+/* ── Footer ── */
+.gym-footer {
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+    display: flex;
+    justify-content: space-between;
+    font-size: .68rem;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+}
+
+/* ── Bootstrap overrides ── */
+.btn-primary {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: var(--cream) !important;
+    font-family: var(--font-body);
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+    .btn-primary:hover {
+        background: #7D5C32 !important;
+        border-color: #7D5C32 !important;
+    }
+
+.btn-secondary {
+    background: var(--bg-4) !important;
+    border-color: var(--border-b) !important;
+    color: var(--text-2) !important;
+    font-family: var(--font-body);
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.btn-warning {
+    background: var(--warm) !important;
+    border-color: var(--warm) !important;
+    color: var(--cream) !important;
+    border-radius: 6px;
+}
+
+.btn-danger {
+    background: var(--red) !important;
+    border-color: var(--red) !important;
+    color: var(--cream) !important;
+    border-radius: 6px;
+}
+
+.btn-success {
+    background: var(--olive) !important;
+    border-color: var(--olive) !important;
+    color: var(--cream) !important;
+    border-radius: 6px;
+}
+
+.btn-info {
+    background: var(--brown-mid) !important;
+    border-color: var(--brown-mid) !important;
+    color: var(--cream) !important;
+    border-radius: 6px;
+}
+
+.card {
+    background: var(--bg-3) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+}
+
+.card-header {
+    background: var(--bg-3) !important;
+    border-bottom: 1px solid var(--border) !important;
+    font-family: var(--font-display);
+    letter-spacing: 2px;
+    color: var(--accent) !important;
+}
+
+.table {
+    color: var(--text-2) !important;
+}
+
+    .table th {
+        font-size: .65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-3) !important;
+        border-bottom: 1px solid var(--border) !important;
+        background: var(--bg) !important;
+    }
+
+    .table td {
+        border-bottom: 1px solid var(--border) !important;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:hover td {
+        background: var(--accent-lt) !important;
+        color: var(--text-1) !important;
+    }
+
+.table-striped tbody tr:nth-child(odd) td {
+    background: var(--bg-3) !important;
+}
+
+.form-control, .form-select {
+    background: var(--bg-3) !important;
+    border: 1px solid var(--border-b) !important;
+    color: var(--text-1) !important;
+    border-radius: 6px !important;
+    font-family: var(--font-body);
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 3px rgba(107,79,42,.12) !important;
+        background: var(--bg-3) !important;
+        color: var(--text-1) !important;
+    }
+
+.form-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.alert-warning {
+    background: var(--warm-lt) !important;
+    border-color: var(--warm) !important;
+    color: var(--warm) !important;
+}
+
+.alert-danger {
+    background: var(--red-lt) !important;
+    border-color: var(--red) !important;
+    color: var(--red) !important;
+}
+
+.alert-info {
+    background: var(--accent-lt) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+}
+
+.alert-success {
+    background: var(--olive-lt) !important;
+    border-color: var(--olive) !important;
+    color: var(--olive) !important;
+}
+
+.badge.bg-success {
+    background: var(--olive) !important;
+}
+
+.badge.bg-danger {
+    background: var(--red) !important;
+}
+
+.badge.bg-warning {
+    background: var(--warm) !important;
+}
+
+.badge.bg-primary {
+    background: var(--accent) !important;
+}
+
+.badge.bg-secondary {
+    background: var(--brown-mid) !important;
+}
+
+.badge.bg-info {
+    background: var(--brown-lt) !important;
+    color: var(--text-1) !important;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: 2px;
+    color: var(--accent);
+}
+
+.container {
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+.progress {
+    background: var(--bg-4) !important;
+}
+
+hr {
+    border-color: var(--border) !important;
+}
+
+.text-muted {
+    color: var(--text-3) !important;
+}
+
+.input-group-text {
+    background: var(--bg-4) !important;
+    border-color: var(--border-b) !important;
+    color: var(--text-2) !important;
+}
+
+/* ── Print ── */
+@media print {
+    .gym-sidebar, .gym-appbar, .gym-footer {
+        display: none !important;
+    }
+
+    .gym-layout {
+        display: block;
+    }
+
+    .gym-main {
+        overflow: visible;
+    }
+
+    .gym-page {
+        padding: 0;
+    }
 }

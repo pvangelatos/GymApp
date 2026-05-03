@@ -7,38 +7,50 @@
     @* Κάρτες στατιστικών *@
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card text-white bg-primary">
+            <div class="card" style="border-top: 3px solid var(--accent) !important;">
                 <div class="card-body">
-                    <h6 class="card-title">Σύνολο Μελών</h6>
-                    <h2 class="card-text">@Model.TotalMembers</h2>
-                    <small>Ενεργά: @Model.ActiveMembers</small>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                        <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Σύνολο Μελών</span>
+                        <i class="ti ti-users" style="color:var(--accent);font-size:1.1rem"></i>
+                    </div>
+                    <div style="font-family:var(--font-display);font-size:2.2rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalMembers</div>
+                    <div style="font-size:.7rem;color:var(--text-3);margin-top:4px">Ενεργά: @Model.ActiveMembers</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success">
+            <div class="card" style="border-top: 3px solid var(--olive) !important;">
                 <div class="card-body">
-                    <h6 class="card-title">Ενεργές Συνδρομές</h6>
-                    <h2 class="card-text">@Model.ActiveSubscriptions</h2>
-                    <small>Ληγμένες: @Model.ExpiredSubscriptions</small>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                        <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Ενεργές Συνδρομές</span>
+                        <i class="ti ti-id-badge" style="color:var(--olive);font-size:1.1rem"></i>
+                    </div>
+                    <div style="font-family:var(--font-display);font-size:2.2rem;letter-spacing:2px;color:var(--text-1)">@Model.ActiveSubscriptions</div>
+                    <div style="font-size:.7rem;color:var(--text-3);margin-top:4px">Ληγμένες: @Model.ExpiredSubscriptions</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-info">
+            <div class="card" style="border-top: 3px solid var(--brown-mid) !important;">
                 <div class="card-body">
-                    <h6 class="card-title">Προγράμματα</h6>
-                    <h2 class="card-text">@Model.TotalPrograms</h2>
-                    <small>Ενεργά προγράμματα</small>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                        <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Προγράμματα</span>
+                        <i class="ti ti-activity" style="color:var(--brown-mid);font-size:1.1rem"></i>
+                    </div>
+                    <div style="font-family:var(--font-display);font-size:2.2rem;letter-spacing:2px;color:var(--text-1)">@Model.TotalPrograms</div>
+                    <div style="font-size:.7rem;color:var(--text-3);margin-top:4px">Ενεργά προγράμματα</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning">
+            <div class="card" style="border-top: 3px solid var(--warm) !important;">
                 <div class="card-body">
-                    <h6 class="card-title">Έσοδα Μήνα</h6>
-                    <h2 class="card-text">@Model.MonthlyRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</h2>
-                    <small>Τρέχων μήνας</small>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                        <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3)">Έσοδα Μήνα</span>
+                        <i class="ti ti-cash" style="color:var(--warm);font-size:1.1rem"></i>
+                    </div>
+                    <div style="font-family:var(--font-display);font-size:2.2rem;letter-spacing:2px;color:var(--text-1)">@Model.MonthlyRevenue.ToString("C", new System.Globalization.CultureInfo("el-GR"))</div>
+                    <div style="font-size:.7rem;color:var(--text-3);margin-top:4px">Τρέχων μήνας</div>
                 </div>
             </div>
         </div>

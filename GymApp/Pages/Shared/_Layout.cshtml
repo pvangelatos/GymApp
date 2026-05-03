@@ -1,79 +1,124 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GymApp</title>
-    <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GymApp.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">GymApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">
-                                🏠 Dashboard
-                                @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
-                                {
-                                    <span class="badge bg-danger">@(ViewData["ExpiringCount"] ?? 0)</span>
-                                }
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Members/Index">Μέλη</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Trainers/Index">Εκπαιδευτές</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/GymPrograms/Index">Προγράμματα</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Reports/ExpiringSubscriptions">⚠️ Ληγούσες</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Reports/Revenue">💰 Έσοδα</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Reports/AttendanceStats">📈 Στατιστικά</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Reports/WeeklySchedule">📅 Πρόγραμμα</a>
-                        </li>
-                    </ul>
+<div class="gym-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="gym-sidebar">
+        <div class="gym-brand">
+            <div class="gym-brand-mark"><i class="ti ti-barbell"></i></div>
+            <div>
+                <div class="gym-brand-name">GYMAPP</div>
+                <div class="gym-brand-sub">Management</div>
+            </div>
+        </div>
+
+        <nav class="gym-nav">
+            <div class="gym-nav-section">Κεντρικό</div>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Index" ? "active" : "")"
+               asp-page="/Index">
+                <i class="ti ti-layout-dashboard"></i> Dashboard
+            </a>
+
+            <div class="gym-nav-section">Διαχείριση</div>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Members") == true ? "active" : "")"
+               asp-page="/Members/Index">
+                <i class="ti ti-users"></i> Μέλη
+            </a>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Trainers") == true ? "active" : "")"
+               asp-page="/Trainers/Index">
+                <i class="ti ti-user-star"></i> Εκπαιδευτές
+            </a>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/GymPrograms") == true ? "active" : "")"
+               asp-page="/GymPrograms/Index">
+                <i class="ti ti-activity"></i> Προγράμματα
+            </a>
+
+            <div class="gym-nav-section">Λειτουργίες</div>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Subscriptions") == true ? "active" : "")"
+               asp-page="/Members/Index">
+                <i class="ti ti-id-badge"></i> Συνδρομές
+            </a>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Bookings") == true ? "active" : "")"
+               asp-page="/Reports/WeeklySchedule">
+                <i class="ti ti-calendar-check"></i> Κρατήσεις
+                @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
+                {
+                    <span class="gym-nav-badge gym-nav-badge-red">@(ViewData["ExpiringCount"] ?? 0)</span>
+                }
+            </a>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Payments") == true ? "active" : "")"
+               asp-page="/Members/Index">
+                <i class="ti ti-credit-card"></i> Πληρωμές
+            </a>
+
+            <div class="gym-nav-section">Αναφορές</div>
+            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Reports") == true ? "active" : "")"
+               asp-page="/Reports/ExpiringSubscriptions">
+                <i class="ti ti-alert-triangle"></i> Ληγούσες
+                @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
+                {
+                    <span class="gym-nav-badge gym-nav-badge-red">@(ViewData["ExpiringCount"] ?? 0)</span>
+                }
+            </a>
+            <a class="gym-nav-link" asp-page="/Reports/Revenue">
+                <i class="ti ti-cash"></i> Έσοδα
+            </a>
+            <a class="gym-nav-link" asp-page="/Reports/AttendanceStats">
+                <i class="ti ti-chart-bar"></i> Στατιστικά
+            </a>
+            <a class="gym-nav-link" asp-page="/Reports/WeeklySchedule">
+                <i class="ti ti-calendar-week"></i> Πρόγραμμα
+            </a>
+        </nav>
+
+        <div class="gym-sidebar-footer">
+            <div class="gym-user-row">
+                <div class="gym-user-av">Α</div>
+                <div>
+                    <div class="gym-user-name">Admin</div>
+                    <div class="gym-user-role">Διαχειριστής</div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - GymApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
-    </footer>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="gym-main">
+        <header class="gym-appbar">
+            <div class="gym-appbar-title">@(ViewData["Title"] ?? "GymApp")</div>
+            <div class="gym-appbar-right">
+                <div class="gym-date-pill">
+                    @DateTime.Now.ToString("ddd · dd.MM.yyyy", new System.Globalization.CultureInfo("el-GR")).ToUpper()
+                </div>
+            </div>
+        </header>
+
+            <div class="gym-page">
+                @RenderBody()
+            </div>
+
+            <footer class="gym-footer">
+                <span>GYMAPP &copy; 2026 &middot; CODING FACTORY &#64; AUEB</span>
+                <span>ASP.NET CORE 10 &middot; EF CORE 10</span>
+            </footer>
+        </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

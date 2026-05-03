@@ -1,42 +1,54 @@
 ﻿@page
 @model GymApp.Pages.Members.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Μέλη</h2>
-        <a asp-page="Create" class="btn btn-primary">+ Νέο Μέλος</a>
-    </div>
-
-    <form method="get" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="SearchTerm" value="@Model.SearchTerm"
-                   class="form-control" placeholder="Αναζήτηση με όνομα, επώνυμο ή τηλέφωνο..." />
-            <button type="submit" class="btn btn-outline-secondary">🔍 Αναζήτηση</button>
-            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
-            {
-                <a asp-page="Index" class="btn btn-outline-danger">✕ Καθαρισμός</a>
-            }
+<div class="d-flex justify-content-between align-items-end mb-4 pb-3" style="border-bottom: 1px solid var(--border)">
+    <div>
+        <h1 style="font-family:var(--font-display);font-size:3rem;letter-spacing:4px;color:var(--accent);line-height:1">ΜΕΛΗ</h1>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:6px">
+            Σύνολο: <strong style="color:var(--text-2)">@Model.Members.Count</strong> μέλη
         </div>
-    </form>
-    <div class="mb-3">
-        <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm"
-               class="btn @(Model.StatusFilter == null ? "btn-dark" : "btn-outline-dark")">
-            Όλα (@Model.Members.Count)
-        </a>
-        <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm" asp-route-StatusFilter="active"
-               class="btn @(Model.StatusFilter == "active" ? "btn-success" : "btn-outline-success")">
-            Ενεργά
-        </a>
-        <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm" asp-route-StatusFilter="inactive"
-               class="btn @(Model.StatusFilter == "inactive" ? "btn-secondary" : "btn-outline-secondary")">
-            Ανενεργά
-        </a>
     </div>
-    <table class="table table-striped">
+    <a asp-page="Create" class="btn btn-primary" style="font-family:var(--font-display);letter-spacing:2px;font-size:.95rem;padding:10px 20px">
+        <i class="ti ti-plus"></i> ΝΕΟ ΜΕΛΟΣ
+    </a>
+</div>
+
+@* Αναζήτηση *@
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <span class="input-group-text"><i class="ti ti-search"></i></span>
+        <input type="text" name="SearchTerm" value="@Model.SearchTerm"
+               class="form-control" placeholder="Αναζήτηση με όνομα, επώνυμο ή τηλέφωνο..." />
+        <button type="submit" class="btn btn-primary"><i class="ti ti-search"></i> Αναζήτηση</button>
+        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+        {
+            <a asp-page="Index" class="btn btn-secondary"><i class="ti ti-x"></i> Καθαρισμός</a>
+        }
+    </div>
+</form>
+
+@* Φίλτρα *@
+<div class="mb-3 d-flex gap-2">
+    <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm"
+           class="btn btn-sm @(Model.StatusFilter == null ? "btn-primary" : "btn-secondary")">
+        Όλα (@Model.Members.Count)
+    </a>
+    <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm" asp-route-StatusFilter="active"
+           class="btn btn-sm @(Model.StatusFilter == "active" ? "btn-primary" : "btn-secondary")">
+        <i class="ti ti-check"></i> Ενεργά
+    </a>
+    <a asp-page="Index" asp-route-SearchTerm="@Model.SearchTerm" asp-route-StatusFilter="inactive"
+           class="btn btn-sm @(Model.StatusFilter == "inactive" ? "btn-primary" : "btn-secondary")">
+        <i class="ti ti-x"></i> Ανενεργά
+    </a>
+</div>
+
+@* Πίνακας *@
+<div class="card">
+    <table class="table mb-0">
         <thead>
             <tr>
-                <th>Επώνυμο</th>
-                <th>Όνομα</th>
+                <th>Μέλος</th>
                 <th>Email</th>
                 <th>Τηλέφωνο</th>
                 <th>Εγγραφή</th>
@@ -48,33 +60,81 @@
             @if (!Model.Members.Any())
             {
                 <tr>
-                    <td colspan="7" class="text-center text-muted">Δεν βρέθηκαν μέλη.</td>
+                    <td colspan="6" class="text-center py-4" style="color:var(--text-3)">
+                        <i class="ti ti-users-off" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                        Δεν βρέθηκαν μέλη.
+                    </td>
                 </tr>
             }
             @foreach (var member in Model.Members)
             {
                 <tr>
-                    <td>@member.Lastname</td>
-                    <td>@member.Firstname</td>
-                    <td>@member.Email</td>
-                    <td>@member.Phone</td>
-                    <td>@member.DateJoined.ToShortDateString()</td>
+                    <td style="white-space:nowrap">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-md);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--accent);flex-shrink:0;font-family:var(--font-mono)">
+                                @(member.Lastname.Length > 0 ? member.Lastname[0].ToString() : "")@(member.Firstname.Length > 0 ? member.Firstname[0].ToString() : "")
+                            </div>
+                            <div>
+                                <div style="font-weight:600;color:var(--text-1);font-size:.85rem">@member.Lastname @member.Firstname</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="white-space:nowrap;font-size:.82rem">@member.Email</td>
+                    <td style="white-space:nowrap;font-size:.82rem;font-family:var(--font-mono)">@member.Phone</td>
+                    <td style="white-space:nowrap;font-size:.82rem;font-family:var(--font-mono)">@member.DateJoined.ToShortDateString()</td>
                     <td>
                         @if (member.IsActive)
                         {
-                            <span class="badge bg-success">Ενεργό</span>
+                            <span class="badge bg-success" style="font-family:var(--font-mono);font-size:.65rem">
+                                <i class="ti ti-check"></i> Ενεργό
+                            </span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Ανενεργό</span>
+                            <span class="badge bg-secondary" style="font-family:var(--font-mono);font-size:.65rem">
+                                <i class="ti ti-x"></i> Ανενεργό
+                            </span>
                         }
                     </td>
-                    <td>
-                        <a asp-page="Edit" asp-route-id="@member.Id" class="btn btn-sm btn-warning">Επεξεργασία</a>
-                        <a asp-page="Details" asp-route-id="@member.Id" class="btn btn-sm btn-info">Λεπτομέρειες</a>
-                        <a asp-page="/Subscriptions/Index" asp-route-memberId="@member.Id" class="btn btn-sm btn-success">Συνδρομές</a>
-                        <a asp-page="/Payments/MemberPayments" asp-route-memberId="@member.Id" class="btn btn-sm btn-dark">💳 Πληρωμές</a>
-                        <a asp-page="Delete" asp-route-id="@member.Id" class="btn btn-sm btn-danger">Διαγραφή</a>
+                    <td style="white-space:nowrap">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="ti ti-dots"></i> Ενέργειες
+                            </button>
+                            <ul class="dropdown-menu" style="background:var(--bg-3);border:1px solid var(--border)">
+                                <li>
+                                    <a class="dropdown-item" asp-page="Edit" asp-route-id="@member.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-edit" style="color:var(--warm)"></i> Επεξεργασία
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="Details" asp-route-id="@member.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-eye" style="color:var(--brown-mid)"></i> Λεπτομέρειες
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Subscriptions/Index" asp-route-memberId="@member.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-id-badge" style="color:var(--olive)"></i> Συνδρομές
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Payments/MemberPayments" asp-route-memberId="@member.Id"
+                                           style="font-size:.82rem;color:var(--text-2)">
+                                        <i class="ti ti-credit-card" style="color:var(--accent)"></i> Πληρωμές
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" style="border-color:var(--border)"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="Delete" asp-route-id="@member.Id"
+                                           style="font-size:.82rem;color:var(--red)">
+                                        <i class="ti ti-trash"></i> Διαγραφή
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             }
