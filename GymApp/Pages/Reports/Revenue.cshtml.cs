@@ -20,18 +20,17 @@ namespace GymApp.Pages.Reports
 
         public async Task OnGetAsync()
         {
-            var subscriptions = await _context.Subscriptions
-                .Include(s => s.SubscriptionPlan)
-                    .ThenInclude(sp => sp.GymProgram)
+            var payments = await _context.Payments
+                .Include(p => p.Subscription)
                 .ToListAsync();
 
-            MonthlyData = subscriptions
-                .GroupBy(s => new { s.StartDate.Year, s.StartDate.Month })
+            MonthlyData = payments
+                .GroupBy(p => new { p.PaymentDate.Year, p.PaymentDate.Month })
                 .Select(g => new MonthlyRevenue
                 {
                     Year = g.Key.Year,
                     Month = g.Key.Month,
-                    Revenue = g.Sum(s => s.AmountPaid),
+                    Revenue = g.Sum(p => p.Amount),
                     SubscriptionCount = g.Count()
                 })
                 .OrderByDescending(m => m.Year)
@@ -46,19 +45,19 @@ namespace GymApp.Pages.Reports
 
         public async Task<IActionResult> OnGetExportAsync()
         {
-            var subscriptions = await _context.Subscriptions
-                .Include(s => s.SubscriptionPlan)
-                    .ThenInclude(sp => sp.GymProgram)
+
+            var payments = await _context.Payments
+                .Include(p => p.Subscription)
                 .ToListAsync();
 
-            var monthlyData = subscriptions
-                .GroupBy(s => new { s.StartDate.Year, s.StartDate.Month })
+            var monthlyData = payments
+                .GroupBy(p => new { p.PaymentDate.Year, p.PaymentDate.Month })
                 .Select(g => new
                 {
                     MonthName = new DateTime(g.Key.Year, g.Key.Month, 1)
                         .ToString("MMMM yyyy", new System.Globalization.CultureInfo("el-GR")),
                     Count = g.Count(),
-                    Revenue = g.Sum(s => s.AmountPaid)
+                    Revenue = g.Sum(p => p.Amount)
                 })
                 .OrderByDescending(m => m.MonthName)
                 .ToList();

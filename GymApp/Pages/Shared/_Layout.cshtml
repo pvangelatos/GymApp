@@ -63,24 +63,27 @@
                 <i class="ti ti-credit-card"></i> Πληρωμές
             </a>
 
-            <div class="gym-nav-section">Αναφορές</div>
-            <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Reports") == true ? "active" : "")"
-               asp-page="/Reports/ExpiringSubscriptions">
-                <i class="ti ti-alert-triangle"></i> Ληγούσες
-                @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
-                {
-                    <span class="gym-nav-badge gym-nav-badge-red">@(ViewData["ExpiringCount"] ?? 0)</span>
-                }
-            </a>
-            <a class="gym-nav-link" asp-page="/Reports/Revenue">
-                <i class="ti ti-cash"></i> Έσοδα
-            </a>
-            <a class="gym-nav-link" asp-page="/Reports/AttendanceStats">
-                <i class="ti ti-chart-bar"></i> Στατιστικά
-            </a>
-            <a class="gym-nav-link" asp-page="/Reports/WeeklySchedule">
-                <i class="ti ti-calendar-week"></i> Πρόγραμμα
-            </a>
+                <div class="gym-nav-section">Αναφορές</div>
+                <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Reports/ExpiringSubscriptions" ? "active" : "")"
+                       asp-page="/Reports/ExpiringSubscriptions">
+                    <i class="ti ti-alert-triangle"></i> Ληγούσες
+                    @if (ViewData["ExpiringCount"] != null && (int)(ViewData["ExpiringCount"] ?? 0) > 0)
+                    {
+                        <span class="gym-nav-badge gym-nav-badge-red">@(ViewData["ExpiringCount"] ?? 0)</span>
+                    }
+                </a>
+                <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Reports/Revenue" ? "active" : "")"
+                       asp-page="/Reports/Revenue">
+                    <i class="ti ti-cash"></i> Έσοδα
+                </a>
+                <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Reports/AttendanceStats" ? "active" : "")"
+                       asp-page="/Reports/AttendanceStats">
+                    <i class="ti ti-chart-bar"></i> Στατιστικά
+                </a>
+                <a class="gym-nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Reports/WeeklySchedule" ? "active" : "")"
+                       asp-page="/Reports/WeeklySchedule">
+                    <i class="ti ti-calendar-week"></i> Πρόγραμμα
+                </a>
         </nav>
 
         <div class="gym-sidebar-footer">
